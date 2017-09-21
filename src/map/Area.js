@@ -8,21 +8,27 @@
 phina.define("Area", {
   superClass: "DisplayElement",
 
+
   init: function(){
     this.superInit();
     this.loader = MapAssetLoader();
     this.node_data = NodeData();
   },
 
-  createArea: function(new_area_list , old_area_list){
+
+
+  createArea: function(new_area_list , old_area_list , layer_name){
     //@param new~ = 最新のエリアロードリスト
     //@param old~ = 更新前のエリア(ロード)リスト
+    //@param name= 取り出すレイヤーの名前
 
     var add_list = this._checkDiff( new_area_list , old_area_list ).add;
     var tilemap_list = this._loadTilemap( add_list );
 
-    return this._buildAreaList( tilemap_list );
+    return this._buildAreaList( tilemap_list , layer_name );
   },
+
+
 
   _checkDiff: function(new_area_list , old_area_list){
     //@param new~ = 最新のエリアロードリスト
@@ -35,47 +41,49 @@ phina.define("Area", {
     var add_list = [];
     var del_list = [];
     var keep_list = [];
-
-    for(var i=0; i<new_arr.length; i++){
+    for(var i=0; i<new_arr.length; i++)
+    {
       var idx = old_arr.indexOf( new_arr[i] );
-
       if(idx == -1) add_list.push( new_area_list[i] );
       else keep_list.push( new_area_list[i] );
     }
-    for(var v=0; v<old_arr.length; v++){
+    for(var v=0; v<old_arr.length; v++)
+    {
       var idx = new_arr.indexOf( old_arr[v] );
-
       if(idx == -1) del_list.push( old_area_list[v] );
     }
 
     return { add:add_list , del:del_list , keep:keep_list };
   },
 
+
+
   _vectorToArrayString: function(vector_list){
     //@param Vector2(x,y) が並んだ配列
-
     var arr = [];
     for(var i=0; i<vector_list.length; i++){
-      arr.push(
-        [ vector_list[i].x , vector_list[i].y ].toString()
-      );
+      arr.push([ vector_list[i].x , vector_list[i].y ].toString());
     }
     return arr;
   },
 
+
+
   _loadTilemap: function(add_list){
     //@param 更新後新たにロードされるエリアのリスト
-
     return this.loader.loadTilemap( add_list );
   },
 
-  _buildAreaList: function(tilemap_list){
+
+
+  _buildAreaList: function(tilemap_list , layer_name){
     //@param 更新後新たにロードされるリスト(add_list)のassetが入った配列
+    //@param 取り出すレイヤーの名前
 
     var enable_area_list = [];
     for(var i=0; i<tilemap_list.length; i++){
 
-      var map_data = tilemap_list[i].getMapData("FLOOR"); //二次元arr
+      var map_data = tilemap_list[i].getMapData( layer_name ); //二次元arr
       var tileset_list = tilemap_list[i].getTilesetData();
       var area_x = tilemap_list[i].area_x;
       var area_y = tilemap_list[i].area_y;
@@ -87,8 +95,11 @@ phina.define("Area", {
     return enable_area_list;
   },
 
+
+
   _buildNodeList: function(map_data , tileset_list , area_x , area_y){
     //@param map_data=１エリア分の二次元配列
+    //@param obj_data= obj二次元配列 (暫定)
     //@param  tileset_list=assetリスト
     //@param area_x,y このエリアのVector2(x,y)pos
 
@@ -111,16 +122,18 @@ phina.define("Area", {
     return arr;
   },
 
+
+
   _getFirstGid: function(tileset_list , maptip_no){
     //@param tileset=画像へのリンクのリスト
     //@param maptip_no=マップチップの番号
 
     for(var i=0; i<tileset_list.length; i++){
-      /*if(maptip_no < 0){
+      if(maptip_no < 0){
         var img_name = null;
-        var firstgid = 0;
+        var firstgid = -1;
       }
-      else*/ if(maptip_no >= tileset_list[i].firstgid){
+      else if(maptip_no >= tileset_list[i].firstgid){
         var img_name = tileset_list[i].name;
         var firstgid = tileset_list[i].firstgid;
       }
@@ -128,4 +141,6 @@ phina.define("Area", {
 
     return { img_name:img_name , firstgid:firstgid };
   },
+
+
 });

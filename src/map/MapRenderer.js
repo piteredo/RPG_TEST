@@ -8,6 +8,7 @@
 phina.define("MapRenderer", {
   superClass: "DisplayElement",
 
+
   init: function(layer){
     //@param = asset_layer_class
 
@@ -18,6 +19,8 @@ phina.define("MapRenderer", {
     this.layer = layer;
   },
 
+
+
   _grid: function(){
     var grid = Grid({
       width: Math.min( MAP_WIDTH , MAP_HEIGHT ),
@@ -26,9 +29,13 @@ phina.define("MapRenderer", {
     return grid;
   },
 
+
+
   _ratio: function(){
     return NODE_WIDTH.ratio(NODE_HEIGHT);
   },
+
+
 
   render: function(map_data){
     //@param [enable_area_list][tip_y][tip_x] の３次元配列

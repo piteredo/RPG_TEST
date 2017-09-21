@@ -18,11 +18,14 @@ phina.define("NodeData", {
     //@param img_name = このマップチップに使用されるアセット名
     //@param firstgid = このマップチップに使用されるアセットの開始番号
 
-    if(img_name == null) return null;
-
-    var node =  this.loader.loadMapTip( img_name );
-    node.step = 0; // step 適用のためのマップデータも読み込むように要修正
-    node.setFrameIndex( maptip_no - firstgid );
+    if(firstgid < 0){
+      var node = DisplayElement();
+    }
+    else{
+      var node =  this.loader.loadMapTip( img_name );
+      node.step = 0; // step 適用のためのマップデータも読み込むように要修正
+      node.setFrameIndex( maptip_no - firstgid );
+    }
     node.visible = false;
     node.tip_pos = phina.geom.Vector2( tip_x , tip_y );
     node.area_pos = phina.geom.Vector2( area_x , area_y );

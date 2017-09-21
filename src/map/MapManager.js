@@ -22,16 +22,19 @@ phina.define("MapManager", {
   },
 
   updateMap: function(tip_x , tip_y , area_x , area_y){
-    //@param tip_x,y=画面中央の最新マップチップ位置座標
-    //@param area_x,y=画面中央の最新エリア位置座標
+    //@param tip_x,y=画面中央(=自キャラ位置)の最新マップチップ位置座標
+    //@param area_x,y=画面中央(=自キャラ位置)の最新エリア位置座標
 
     this.tip_pos = phina.geom.Vector2( tip_x , tip_y );
     this.area_pos = phina.geom.Vector2( area_x , area_y );
 
     var new_area_list = this.area_list.updateAreaList( this.area_pos );
-    var map_data = this.area.createArea( new_area_list , this.area_loaded );
 
+    var map_data = this.area.createArea( new_area_list , this.area_loaded , "FLOOR");
     this.renderer.render( map_data );
+
+    var obj_data = this.area.createArea( new_area_list , this.area_loaded , "OBJECT");
+    this.renderer.render( obj_data );
   },
 
 });
