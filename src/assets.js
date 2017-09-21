@@ -13,5 +13,13 @@ var ASSETS = {
 
   tmx: {
     "x0_y0": "assets/tmx/x0_y0.tmx",
+    "x1_y0": "assets/tmx/x1_y0.tmx",
+    "x2_y0": "assets/tmx/x2_y0.tmx",
+    "x0_y1": "assets/tmx/x0_y1.tmx",
+    "x1_y1": "assets/tmx/x1_y1.tmx",
+    "x2_y1": "assets/tmx/x2_y1.tmx",
+    "x0_y2": "assets/tmx/x0_y2.tmx",
+    "x1_y2": "assets/tmx/x1_y2.tmx",
+    "x2_y2": "assets/tmx/x2_y2.tmx",
   },
 };

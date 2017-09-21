@@ -15,7 +15,10 @@ phina.define('MainScene', {
     });
 
     //以下テスト中
-    x0_y0().addChildTo(this);
+    this.asset_layer = AssetLayer().addChildTo(this);
+    this.map_manager = MapManager( this.asset_layer );
+    this.map_manager.updateMap(10 , 10 , 1 , 1); //テスト要暫定数字 実際は自キャラの位置をもらう
+
 
     /*
     this.map_render_m = MapRenderManager(); //マップ描画マネージャクラス
