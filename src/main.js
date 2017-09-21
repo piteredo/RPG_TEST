@@ -44,5 +44,5 @@ phina.main(function() {
     assets: ASSETS,
   });
   if(!phina.isMobile()) app.enableStats();
-  app.run(); // LoadingScene → MainScene
+  app.run(); // LoadingScene → MainScene 
 });
