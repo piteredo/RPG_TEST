@@ -52,28 +52,35 @@ phina.define("MapRenderer", {
                   floor_node.tip_pos.x + (floor_node.area_pos.x * NODE_LENGTH),
                   floor_node.tip_pos.y + (floor_node.area_pos.y * NODE_LENGTH)
                );
+               var pos_quarter = abs_pos.toQuarter(this.ratio_w, this.ratio_h);
+
+
+               if(collision_node != null){
+                  if (collision_node.area_pos.x == 0 && collision_node.area_pos.y == 0) collision_node.visible = true; //表示暫定 visible_update 作る
+                  collision_node.setPosition(
+                     this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
+                     this.grid.span(pos_quarter.y)
+                  );
+                  collision_node.addChildTo(this.layer);
+               }
+
 
                if (floor_node.area_pos.x == 0 && floor_node.area_pos.y == 0) floor_node.visible = true; //表示暫定 visible_update 作る
-               if (collision_node.area_pos.x == 0 && collision_node.area_pos.y == 0) collision_node.visible = true; //表示暫定 visible_update 作る
-               if (objects_node.area_pos.x == 0 && objects_node.area_pos.y == 0) objects_node.visible = true; //表示暫定 visible_update 作る
-
-               var pos_quarter = abs_pos.toQuarter(this.ratio_w, this.ratio_h);
                floor_node.setPosition(
                   this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
                   this.grid.span(pos_quarter.y)
                );
-               collision_node.setPosition(
-                  this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
-                  this.grid.span(pos_quarter.y)
-               );
-               objects_node.setPosition(
-                  this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
-                  this.grid.span(pos_quarter.y)
-               );
-
-               collision_node.addChildTo(this.layer);
                floor_node.addChildTo(this.layer);
-               objects_node.addChildTo(this.layer);
+
+
+               if(objects_node != null){
+                  if (objects_node.area_pos.x == 0 && objects_node.area_pos.y == 0) objects_node.visible = true; //表示暫定 visible_update 作る
+                  objects_node.setPosition(
+                     this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
+                     this.grid.span(pos_quarter.y)
+                  );
+                  objects_node.addChildTo(this.layer);
+               }
             }
          }
       }

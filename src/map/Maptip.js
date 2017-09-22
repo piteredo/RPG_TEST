@@ -18,15 +18,15 @@ phina.define("Maptip", {
       var maptip;
 
       if (firstgid < 0) {
-         maptip = DisplayElement();
+         maptip = null;
       } else {
          maptip = this._loadMaptip(img_name);
          maptip.step = 0; // step 適用のためのマップデータも読み込むように要修正
          maptip.setFrameIndex(maptip_no - firstgid);
+         maptip.visible = false;
+         maptip.tip_pos = phina.geom.Vector2(tip_x, tip_y);
+         maptip.area_pos = phina.geom.Vector2(area_x, area_y);
       }
-      maptip.visible = false;
-      maptip.tip_pos = phina.geom.Vector2(tip_x, tip_y);
-      maptip.area_pos = phina.geom.Vector2(area_x, area_y);
 
       return maptip;
    },
