@@ -18,7 +18,7 @@ phina.define('MainScene', {
     this.asset_layer = AssetLayer().addChildTo(this);
     this.map_manager = MapManager( this.asset_layer );
 
-    this.map_manager.updateMap(NODE_DEF_POS , AREA_DEF_POS); //テスト要暫定数字 実際は自キャラの位置をもらう
+    this.map_manager.updateArea(AREA_DEF_POS); //テスト要暫定数字 実際は自キャラの位置をもらう
 
 
     /*

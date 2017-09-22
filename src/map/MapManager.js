@@ -12,7 +12,7 @@ phina.define("MapManager", {
 
 
    init: function(layer) {
-      //@param AssetLayer Class
+      //@param AssetLayer_Class
 
       this.AreaPosList = AreaPosList();
       this.AreaBuilder = AreaBuilder();
@@ -20,8 +20,7 @@ phina.define("MapManager", {
    },
 
 
-   updateMap: function(tip_ctr_pos, area_ctr_pos) {
-      //@param _pos=Vectro2(x,y)
+   updateArea: function(area_ctr_pos) { // area_ctr_pos が変更されたときだけ呼ばれるように
 
       var updt = this.AreaPosList.getAreaPosListUpdate(area_ctr_pos);
       var area_build_list = updt.build_list;
@@ -32,7 +31,6 @@ phina.define("MapManager", {
       //this._unbuildAreas(area_unbuild_list);
 
       this.Renderer.render(this.loaded_map_data);
-      //console.log(updt , this.loaded_map_data);
    },
 
 
