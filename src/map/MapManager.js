@@ -1,40 +1,52 @@
-
-
-
-// MapManager Class
-
-
-
+//
+//
+// MapManager.js
+// 2017 @auther piteredo
+// This Program is MIT license.
+//
+//
 phina.define("MapManager", {
 
-  init: function(asset_layer_class){
-    this.tip_pos = phina.geom.Vector2(0 , 0); //最終的には char first pos にする
-    this.area_pos = phina.geom.Vector2(0 , 0); //最終的には char first pos にする
-    this.area_loaded = [
-      //phina.geom.Vector2(0,0), //テスト用初期設定(本来はvoid)
-      //phina.geom.Vector2(2,2)
-    ];
 
-    this.layer = asset_layer_class;
-    this.area_list = AreaList();
-    this.area = Area();
-    this.renderer = MapRenderer( this.layer );
-  },
+   loaded_map_data: [],
 
-  updateMap: function(tip_x , tip_y , area_x , area_y){
-    //@param tip_x,y=画面中央(=自キャラ位置)の最新マップチップ位置座標
-    //@param area_x,y=画面中央(=自キャラ位置)の最新エリア位置座標
 
-    this.tip_pos = phina.geom.Vector2( tip_x , tip_y );
-    this.area_pos = phina.geom.Vector2( area_x , area_y );
+   init: function(layer) {
+      //@param AssetLayer Class
 
-    var new_area_list = this.area_list.updateAreaList( this.area_pos );
+      this.AreaPosList = AreaPosList();
+      this.AreaBuilder = AreaBuilder();
+      this.Renderer = MapRenderer(layer);
+   },
 
-    var map_data = this.area.createArea( new_area_list , this.area_loaded , "FLOOR");
-    this.renderer.render( map_data );
 
-    var obj_data = this.area.createArea( new_area_list , this.area_loaded , "OBJECT");
-    this.renderer.render( obj_data );
-  },
+   updateMap: function(tip_ctr_pos, area_ctr_pos) {
+      //@param _pos=Vectro2(x,y)
+
+      var updt = this.AreaPosList.getAreaPosListUpdate(area_ctr_pos);
+      var area_build_list = updt.build_list;
+      //var area_unbuild_list = updt.unbuild_list;
+      //var area_keep_list = updt.keep_list;
+
+      this._buildAreas(area_build_list);
+      //this._unbuildAreas(area_unbuild_list);
+
+      this.Renderer.render(this.loaded_map_data);
+      //console.log(updt , this.loaded_map_data);
+   },
+
+
+   _buildAreas: function(area_build_list){
+      (area_build_list.length).times(function(i){
+         var area = this.AreaBuilder.buildArea(area_build_list[i]);
+         this.loaded_map_data.push(area);
+      }.bind(this));
+   },
+
+
+   _unbuildAreas: function(){
+      //todo
+   },
+
 
 });
