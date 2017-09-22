@@ -43,7 +43,7 @@ phina.define("MapManager", {
 
 
    _unbuildAreas: function(){
-      //todo
+      //todo 
    },
 
 
