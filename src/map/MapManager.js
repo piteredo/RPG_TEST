@@ -23,7 +23,7 @@ phina.define("MapManager", {
    init: function() {
       this.AreaList = AreaList();
       this.Area = Area();
-      this.Visibility = MapNodeVisibility();
+      this.Visibility = MapNodeVisibility(this);
 
       this.valid_map_data = this.AreaList.getAreaList();
       this._updateArea(AREA_DEF_POS);
@@ -64,12 +64,37 @@ phina.define("MapManager", {
       //(↑Rendererはマップ以外も統括する偉いひとにする？)
       //最後に focus_area_pos , focus_node_pos を更新しておく
 
-      var new_pos = new_focus_node_pos;
-      if(this.focus_node_pos.equals(new_pos) &&
+      if(this.focus_node_pos.equals(new_focus_node_pos) &&
          this.focus_area_pos.equals(new_focus_area_pos)) return; //エリア・ノード共に変更なければつっぱねる
 
-      this.Visibility.updateVisibility(this.valid_map_data , new_pos);
+      this.Visibility.updateVisibility(this.valid_map_data , new_focus_node_pos , new_focus_area_pos);
    },
 
+
+   getNode: function(abs_x , abs_y){
+
+      if(x<0 || y<0 || x>=AREA_LENGTH*NODE_LENGTH || y>=AREA_LENGTH*NODE_LENGTH) return false;
+
+      var area_pos = this._getRelPosData(abs_x , abs_y ).area_pos;
+      var node_pos = this._getRelPosData(abs_x , abs_y ).node_pos;
+
+      var area = this.valid_map_data[area_pos.y][area_pos.x];
+      var layer = "floor";
+      var node = area[layer][node_pos.x][node_pos.y];
+
+      return node;
+   },
+
+
+
+   _getRelPosData: function(abs_x , abs_y){
+      var area_x = Math.floor(abs_x / NODE_LENGTH);
+      var area_y = Math.floor(abs_y / NODE_LENGTH);
+      var node_x = (abs_x % NODE_LENGTH);
+      var node_y = (abs_y % NODE_LENGTH);
+
+      var list = {area_pos:Vector2(area_x,area_y) , node_pos:Vector2(node_x,node_y)};
+      return list;
+   },
 
 });

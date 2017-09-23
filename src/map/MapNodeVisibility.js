@@ -9,16 +9,129 @@ phina.define("MapNodeVisibility", {
 
    visible_list: [],
 
-   init: function(){
+   init: function(MapManager_Class){
+      this.MapManager = MapManager_Class;
+   },
+
+
+   updateVisibility: function(valid_map_data , new_focus_node_pos , new_focus_area_pos){
+      //console.log(valid_map_data , new_focus_node_pos , new_focus_area_pos);
+
+      //絶対座標を求める
       //
+      //表示範囲の四角(=スクリーン)の四隅に位置するマップノード_posを求める。
+      //
+      //非表示にすべき(更新前に表示対象だった)ノードが↑より外側に移動してることに備えて、
+      //求めた四隅から外側上下左右に読み進め、visible=false のところで読み進めを停止する。
+      //
+      //上下左右のなかで一番読み進んだ歩数を、四隅全てに適用する(四隅が少し外側に広がる)。
+      //
+      //クォータービューなのでジグザグ(？)に読まないとならない、
+      //クォータービュー座標で、x++ の間に、y は上下に範囲を広げつつ、端まで行ったら閉じつつ進む。
+      //
+      //そうして対象のマップノードを読み、画面表示範囲内にいるかで、visible=true/false を付けて、リストを返す。
+
+
+      var abs_pos = this._getAbsPos(new_focus_node_pos , new_focus_area_pos);
+
+      this._getCornerPosList(abs_pos);
    },
 
 
-   updateVisibility: function(valid_map_data , new_focus_node_pos){
-      console.log(valid_map_data , new_focus_node_pos);
-
-      //マップチップに表示の可否をつけて返す
+   _getAbsPos: function(new_focus_node_pos , new_focus_area_pos){
+      var node_pos = new_focus_node_pos;
+      var area_pos = new_focus_area_pos;
+      var abs_pos = area_pos.mul(NODE_LENGTH).add(node_pos);
+console.log(abs_pos);
+      return abs_pos;
    },
+
+
+   _getCornerPosList: function(abs_pos){
+      var list = {};
+      var corner_list = ["LEFT_TOP" , "LEFT_BOTTOM" , "RIGHT_TOP" , "RIGHT_BOTTOM"];
+      var dir_vertical;
+      var dir_horizontal;
+
+      (corner_list.length).times(function(i){
+         switch (corner_list[i]) {
+            case "LEFT_TOP":
+               dir_vertical = Vector2.TOP; //トップビューでの方角
+               dir_horizontal = Vector2.LEFT;
+               break;
+            case "LEFT_BOTTOM":
+               dir_vertical = Vector2.BOTTOM;
+               dir_horizontal = Vector2.LEFT;
+               break;
+            case "RIGHT_TOP":
+               dir_vertical = Vector2.TOP;
+               dir_horizontal = Vector2.RIGHT;
+               break;
+            case "RIGHT_BOTTOM":
+               dir_vertical = Vector2.BOTTOM;
+               dir_horizontal = Vector2.RIGHT;
+               break;
+         }
+
+         var pos = abs_pos.clone();
+
+         //画面中央から画面外までの縦幅(SCREEN_WIDTH/2) を マップチップの縦幅で割ったもの=個数
+         var dis_vertical = Math.ceil(SCREEN_HEIGHT / 2 / NODE_HEIGHT) + 1;
+         //↑で求めた縦方向の方角に、↑のマップチップ個数分 center_pos(clone) を移動
+         pos.add(dir_vertical.mul(dis_vertical));
+
+         //↑の横幅版
+         var dis_horizontal = Math.ceil(SCREEN_WIDTH / 2 / NODE_WIDTH) + 1;
+         pos.add(dir_horizontal.mul(dis_horizontal));
+
+         //{DIR:pos , ...}
+         list[corner_list[i]] = pos;
+      });
+
+      this._getPadding(list);
+   },
+
+   _getPadding: function(corner_pos_list){
+
+      var list = corner_pos_list;
+
+      //----GO_LEFT(トップビューでの方角)----
+      //[X] LEFT_TOP.x から LEFT_BOTTOM.x に進む
+      //[Y] LEFT_TOP.y から ++ する (ジグザグ進行)
+      //各ノード、visible==true がひとつでもあれば counter++ する
+      //Xの端まで(１列)読み終えたところで、counter が０(=１列全てvisible==false) なら終了
+      //counter が１以上なら、LEFT_TOP.x , LEFT_BOTTOM.x に１加えて(改行して) もう１列調べる
+      //元のコーナー地点から、左に進んだ列の数を返す
+
+      while(1){
+         var counter = 0;
+         var y=list.LEFT_TOP.y;
+         for(x=list.LEFT_TOP.x ; x<list.LEFT_BOTTOM.x+1 ; x++){
+            console.log(x,y);
+
+            var node = this.MapManager.getNode(x,y);
+            console.log(node);
+
+            if(node && node.visible) counter++;
+
+            y++;
+         }
+         if(counter == 0) break;
+         //START_x & END_X ++
+      }
+      //[return] padding = Math.abs(BASE_X , STOP_X)
+
+      //CONTINUE ANOTHER_DIR
+
+      //COMPARE paddings of 4 dir
+      //largest padding be a PADDING;
+
+      //list.LEFT_TOP.add(Vector.LEFT_TOP.mul(PADDING))
+      //CONTINUE ANOTHER_DIR
+
+      //[return] decided corner_pos_list
+   },
+
 
    /*
    _updt: function(tip_ctr_pos, area_ctr_pos , mpdt) { //すでに新しくなった pos を(変更あるときのみ)もらう
