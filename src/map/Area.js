@@ -6,7 +6,7 @@
 //
 //
 phina.define("Area", {
-   //MapManagerに呼ばれたときだけ働く。
+   //MapManager_Class に呼ばれたときだけ働く。
    //valid_map_data を預かって、指定されたエリアデータを消し去って返す
    //valid_map_data を預かって、指定されたエリアデータを構築して詰め込んで返す
    //エリアデータの構築は、area_asset(TiledMapEditorのタイルマップデータ) 読み込み、各ノード情報を MapNode_Class から貰って行う。
