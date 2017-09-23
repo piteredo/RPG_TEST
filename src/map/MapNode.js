@@ -6,7 +6,7 @@
 //
 //
 phina.define("MapNode", {
-   //マップのエリア作成時に Area_Class からのみ呼ばれて、マップの単一ノードの情報を詰め込んでて返す。
+   //マップのエリア作成時に Area_Class からのみ呼ばれて、マップの単一ノードの情報を詰め込んで返す。
 
    superClass: "DisplayElement",
 
@@ -17,7 +17,7 @@ phina.define("MapNode", {
 
 
    getMapNodeData: function(maptip_id, maptip_set_name, firstgid, node_x, node_y, area_x, area_y) {
-      var node = null; // 非表示ノード null でこの先済むのか？
+      var node = null; // マップチップが存在しないノード = null でこの先済むのか？
 
       if (firstgid >= 0) {
          node = this._loadMaptip(maptip_set_name);
