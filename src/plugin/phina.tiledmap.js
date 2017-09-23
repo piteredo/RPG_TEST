@@ -54,7 +54,7 @@ phina.define("phina.asset.TiledMap", {
 
 
 
-    getTilesetData: function(){
+    getMaptipSetList: function(){
       return this.tilesets;
     },
 
