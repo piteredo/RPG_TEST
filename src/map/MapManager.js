@@ -6,8 +6,8 @@
 //
 //
 phina.define("MapManager", {
-   //マップに関する統括。指示だけ出しまくって処理を完遂させる。
-   //カメラ位置更新に対する、focus_node_pos / focus_area_pos 更新の見極め差表だけはここでやる。
+   //マップに関する統括。指示だけ出しまくって自分は作業せずに処理を完遂させる。
+   //カメラ位置更新に対する、focus_node_pos / focus_area_pos 更新の見極め差表だけはここでやる (？)。
    //データの入った完成品 valid_map_data はここでのみ保持する。
 
 
@@ -57,9 +57,9 @@ phina.define("MapManager", {
 
    _updateNode: function(new_focus_node_pos , new_focus_area_pos){
       //new_focus_node_pos = カメラ表示対象となるべきノード(Vector2(x,y))
-      //new_focus_area_pos = まだ focus_area_pos には更新されていない
+      //new_focus_area_pos = まだ focus_area_pos には反映されていない
 
-      //新規カメラ位置と、中身入りマップリストを MapNodeVisibility_Class に渡して、マップチップごとに表示の可否を付けて返してもらう (いまここ)
+      //新規カメラ位置と、マップデータを MapNodeVisibility_Class に渡して、マップチップごとに表示の可否を付けて返してもらう 【いまここ途中】
       //MapRenderer_Class に、可否のついた最終版リストを渡して表示処理(child)してもらう。
       //(↑Rendererはマップ以外も統括する偉いひとにする？)
       //最後に focus_area_pos , focus_node_pos を更新しておく
