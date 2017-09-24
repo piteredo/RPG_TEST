@@ -15,7 +15,6 @@ phina.define("MapNodeVisibility", {
 
 
    updateVisibility: function(valid_map_data , new_focus_node_pos , new_focus_area_pos){
-      //console.log(valid_map_data , new_focus_node_pos , new_focus_area_pos);
 
       //絶対座標を求める
       //
@@ -32,9 +31,14 @@ phina.define("MapNodeVisibility", {
       //そうして対象のマップノードを読み、画面表示範囲内にいるかで、visible=true/false を付けて、リストを返す。
 
 
-      var abs_pos = this._getAbsPos(new_focus_node_pos , new_focus_area_pos);
+      var abs_pos = this._getAbsPos(new_focus_node_pos , new_focus_area_pos); //外部に移動
 
-      this._getCornerPosList(abs_pos);
+      var corner_list = this._getCornerPosList(abs_pos);
+
+      var target_nodes = this._getTargetNodes(corner_list);
+
+      var data = this._sortNodeStatus(target_nodes);
+      return data;
    },
 
 
@@ -42,32 +46,32 @@ phina.define("MapNodeVisibility", {
       var node_pos = new_focus_node_pos;
       var area_pos = new_focus_area_pos;
       var abs_pos = area_pos.mul(NODE_LENGTH).add(node_pos);
-console.log(abs_pos);
+
       return abs_pos;
    },
 
 
    _getCornerPosList: function(abs_pos){
       var list = {};
-      var corner_list = ["LEFT_TOP" , "LEFT_BOTTOM" , "RIGHT_TOP" , "RIGHT_BOTTOM"];
+      var corner_list = ["left_top" , "left_bottom" , "right_top" , "right_bottom"];
       var dir_vertical;
       var dir_horizontal;
 
       (corner_list.length).times(function(i){
          switch (corner_list[i]) {
-            case "LEFT_TOP":
+            case "left_top":
                dir_vertical = Vector2.TOP; //トップビューでの方角
                dir_horizontal = Vector2.LEFT;
                break;
-            case "LEFT_BOTTOM":
+            case "left_bottom":
                dir_vertical = Vector2.BOTTOM;
                dir_horizontal = Vector2.LEFT;
                break;
-            case "RIGHT_TOP":
+            case "right_top":
                dir_vertical = Vector2.TOP;
                dir_horizontal = Vector2.RIGHT;
                break;
-            case "RIGHT_BOTTOM":
+            case "right_bottom":
                dir_vertical = Vector2.BOTTOM;
                dir_horizontal = Vector2.RIGHT;
                break;
@@ -88,12 +92,20 @@ console.log(abs_pos);
          list[corner_list[i]] = pos;
       });
 
-      this._getPadding(list);
+      var padding_max = this._getPadding(list);
+
+      list.left_top.add(Vector2.LEFT_TOP.mul(padding_max));
+      list.right_top.add(Vector2.RIGHT_TOP.mul(padding_max));
+      list.left_bottom.add(Vector2.LEFT_BOTTOM.mul(padding_max));
+      list.right_bottom.add(Vector2.RIGHT_BOTTOM.mul(padding_max));
+
+      return list;
    },
 
    _getPadding: function(corner_pos_list){
 
       var list = corner_pos_list;
+      var padding_list =[];
 
       //----GO_LEFT(トップビューでの方角)----
       //[X] LEFT_TOP.x から LEFT_BOTTOM.x に進む
@@ -102,34 +114,158 @@ console.log(abs_pos);
       //Xの端まで(１列)読み終えたところで、counter が０(=１列全てvisible==false) なら終了
       //counter が１以上なら、LEFT_TOP.x , LEFT_BOTTOM.x に１加えて(改行して) もう１列調べる
       //元のコーナー地点から、左に進んだ列の数を返す
-
+      var start = list.left_top.x;
+      var end = list.left_bottom.x + 1;
       while(1){
          var counter = 0;
-         var y=list.LEFT_TOP.y;
-         for(x=list.LEFT_TOP.x ; x<list.LEFT_BOTTOM.x+1 ; x++){
-            console.log(x,y);
-
+         var y = list.left_top.y;
+         for(x = start; x < end; x++){
             var node = this.MapManager.getNode(x,y);
-            console.log(node);
-
             if(node && node.visible) counter++;
-
             y++;
          }
          if(counter == 0) break;
-         //START_x & END_X ++
+         start++;
+         end++;
       }
-      //[return] padding = Math.abs(BASE_X , STOP_X)
+      var padding_left = Math.abs(start - list.left_top.x);
+      padding_list.push(padding_left);
 
-      //CONTINUE ANOTHER_DIR
+      var start = list.right_top.x;
+      var end = list.right_bottom.x + 1;
+      while(1){
+         var counter = 0;
+         var y = list.right_top.y;
+         for(x = start; x < end; x++){
+            var node = this.MapManager.getNode(x,y);
+            if(node && node.visible) counter++;
+            y++;
+         }
+         if(counter == 0) break;
+         start--;
+         end--;
+      }
+      var padding_right = Math.abs(list.right_top.x - start);
+      padding_list.push(padding_right);
 
-      //COMPARE paddings of 4 dir
-      //largest padding be a PADDING;
+      var start = list.right_top.y;
+      var end = list.left_top.y + 1;
+      while(1){
+         var counter = 0;
+         var x = list.right_top.x;
+         for(y = start; y < end; y++){
+            var node = this.MapManager.getNode(x,y);
+            if(node && node.visible) counter++;
+            x--;
+         }
+         if(counter == 0) break;
+         start--;
+         end--;
+      }
+      var padding_top = Math.abs(start - list.right_top.y);
+      padding_list.push(padding_top);
 
-      //list.LEFT_TOP.add(Vector.LEFT_TOP.mul(PADDING))
-      //CONTINUE ANOTHER_DIR
+      var start = list.right_bottom.y;
+      var end = list.left_bottom.y + 1;
+      while(1){
+         var counter = 0;
+         var x = list.right_bottom.x;
+         for(y = start; y < end; y++){
+            var node = this.MapManager.getNode(x,y);
+            if(node && node.visible) counter++;
+            x--;
+         }
+         if(counter == 0) break;
+         start++;
+         end++;
+      }
+      var padding_bottom = Math.abs(list.right_bottom.y - start);
+      padding_list.push(padding_bottom);
 
-      //[return] decided corner_pos_list
+
+      var padding_max = padding_list.most().max;
+      return padding_max;
+   },
+
+
+   _getTargetNodes: function(corner_list){
+      var a = [];
+
+      var left_top_pos = corner_list.left_top;
+      var right_top_pos = corner_list.right_top;
+      var left_bottom_pos = corner_list.left_bottom;
+      var right_bottom_pos = corner_list.right_bottom;
+
+      var y_dim_add = left_top_pos.y; //Y方向マイナス→折り返してプラスに進む変数
+      var y_add_dim = left_top_pos.y; //Y方向プラス→折り返してマイナスに進む変数
+      var y_dim_add_dir = "dim"; //最初はマイナス方向だというフラグ
+      var y_add_dim_dir = "add"; //最初はプラス方向だというフラグ
+
+      for (var x = left_top_pos.x; x < right_bottom_pos.x + 1; x++) {
+         for (var y = y_dim_add; y < y_add_dim + 1; y++) {
+
+            var node = this.MapManager.getNode(x, y);
+            a.push(node);
+
+         }
+         switch (y_dim_add_dir) {
+            case "dim":
+               y_dim_add--;
+               break;
+            case "add":
+               y_dim_add++;
+               break;
+         }
+         switch (y_add_dim_dir) {
+            case "dim":
+               y_add_dim--;
+               break;
+            case "add":
+               y_add_dim++;
+               break;
+         }
+         if (y_dim_add == right_top_pos.y) y_dim_add_dir = "add";
+         if (y_add_dim == left_bottom_pos.y) y_add_dim_dir = "dim";
+      }
+
+      return a;
+   },
+
+
+   _sortNodeStatus: function(nodes){
+      var child = [];
+      var remove = [];
+      (nodes.length).times(function(i){
+         var node = nodes[i];
+         var data = {};
+
+         var abs_right = node.right; //abs 求める(どこを親とするかによってかわる？)
+         var abs_left = node.left;
+         var abs_bottom = node.bottom;
+         var abs_top = node.top;
+
+         var border_left = -PROCESS_MARGIN;
+         var border_right = SCREEN_WIDTH + PROCESS_MARGIN;
+         var border_top = -PROCESS_MARGIN;
+         var border_bottom = SCREEN_HEIGHT + PROCESS_MARGIN;
+
+         if (Math.inside(abs_right, border_left, border_right) && Math.inside(abs_bottom, border_top, border_bottom) ||
+            Math.inside(abs_left, border_left, border_right) && Math.inside(abs_bottom, border_top, border_bottom) ||
+            Math.inside(abs_right, border_left, border_right) && Math.inside(abs_top, border_top, border_bottom) ||
+            Math.inside(abs_left, border_left, border_right) && Math.inside(abs_top, border_top, border_bottom)) {
+            if (!node.visible) child.push(node);
+         } else {
+            if (node.visible) {
+               //var index = this.visible_list.indexOf(node);
+               //this.visible_list.splice(index, 1);
+               //this.map.remove(node); 外部委託
+               remove.push(node);
+            }
+         }
+      }.bind(this));
+
+      data = {child:child,remove:remove};
+      return data;
    },
 
 

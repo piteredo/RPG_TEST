@@ -11,8 +11,7 @@ phina.define("MapManager", {
    //データの入った完成品 valid_map_data はここでのみ保持する。
 
 
-   //ロードすべきエリア分の、その中身も入ったマップデータ。
-   //ロードされてないエリアには 0 が入っている
+   //ロードすべきエリア分の、その中身も入ったマップデータ。ロードされてないエリアには 0 が入っている
    //変則四次元配列([area_x][area_y]  {floor:arr[node_y][node_x], collision:arr, objects:arr} or 0);
    valid_map_data: null,
 
@@ -20,10 +19,12 @@ phina.define("MapManager", {
    focus_node_pos: Vector2(-1,-1),
 
 
-   init: function() {
+   init: function(layer) {
       this.AreaList = AreaList();
       this.Area = Area();
       this.Visibility = MapNodeVisibility(this);
+      this.Renderer = MapRenderer(this , layer);
+      this.l = layer;
 
       this.valid_map_data = this.AreaList.getAreaList();
       this._updateArea(AREA_DEF_POS);
@@ -67,20 +68,28 @@ phina.define("MapManager", {
       if(this.focus_node_pos.equals(new_focus_node_pos) &&
          this.focus_area_pos.equals(new_focus_area_pos)) return; //エリア・ノード共に変更なければつっぱねる
 
-      this.Visibility.updateVisibility(this.valid_map_data , new_focus_node_pos , new_focus_area_pos);
+      var update_nodes = this.Visibility.updateVisibility(this.valid_map_data , new_focus_node_pos , new_focus_area_pos);
+
+      //console.log(update_nodes);
+
+      this.Renderer.render(update_nodes.child);
+      //console.log(this.l);
    },
 
 
    getNode: function(abs_x , abs_y){
+      var x = abs_x;
+      var y = abs_y;
 
       if(x<0 || y<0 || x>=AREA_LENGTH*NODE_LENGTH || y>=AREA_LENGTH*NODE_LENGTH) return false;
 
-      var area_pos = this._getRelPosData(abs_x , abs_y ).area_pos;
-      var node_pos = this._getRelPosData(abs_x , abs_y ).node_pos;
+      var area_pos = this._getRelPosData(x , y ).area_pos;
+      var node_pos = this._getRelPosData(x , y ).node_pos;
 
       var area = this.valid_map_data[area_pos.y][area_pos.x];
       var layer = "floor";
-      var node = area[layer][node_pos.x][node_pos.y];
+
+      var node = area[layer][node_pos.y][node_pos.x];
 
       return node;
    },
