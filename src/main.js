@@ -44,6 +44,9 @@ MAP_FLOOR_LAYER_NAME = "FLOOR"; //TileMapEditorのレイヤー名に依存
 MAP_COLLISION_LAYER_NAME = "COLLISION";
 MAP_OBJECTS_LAYER_NAME = "OBJECT";
 
+// Camera
+CAMERA_POS = Vector2(SCREEN_WIDTH/2 , SCREEN_HEIGHT/2);
+
 
 
 phina.main(function() {

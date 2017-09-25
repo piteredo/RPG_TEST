@@ -41,9 +41,10 @@ phina.define("MapRenderer", {
    render: function(child_list) {
       (child_list.length).times(function(i){
 
-         var floor_node = this.MapManager.valid_map_data[child_list[i].area_pos.x][child_list[i].area_pos.y].floor[child_list[i].node_pos.x][child_list[i].node_pos.y];
-         var collision_node = this.MapManager.valid_map_data[child_list[i].area_pos.x][child_list[i].area_pos.y].collision[child_list[i].node_pos.x][child_list[i].node_pos.y];
-         var objects_node = this.MapManager.valid_map_data[child_list[i].area_pos.x][child_list[i].area_pos.y].objects[child_list[i].node_pos.x][child_list[i].node_pos.y];
+         var ss = this.MapManager.map_data[child_list[i].area_pos.x][child_list[i].area_pos.y][child_list[i].node_pos.x][child_list[i].node_pos.y];
+         var floor_node = ss.floor;
+         var collision_node = ss.collision;
+         var objects_node = ss.objects;
 
          var abs_pos = phina.geom.Vector2(
             floor_node.node_pos.x + (floor_node.area_pos.x * NODE_LENGTH),
@@ -58,7 +59,7 @@ phina.define("MapRenderer", {
                this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
                this.grid.span(pos_quarter.y)
             );
-            collision_node.addChildTo(this.layer);
+            this.layer.childNode(collision_node);
          }
 
 
@@ -67,7 +68,7 @@ phina.define("MapRenderer", {
             this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
             this.grid.span(pos_quarter.y)
          );
-         floor_node.addChildTo(this.layer);
+         this.layer.childNode(floor_node);
          floor_node.visible = true;
 
 
@@ -77,7 +78,7 @@ phina.define("MapRenderer", {
                this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
                this.grid.span(pos_quarter.y)
             );
-            objects_node.addChildTo(this.layer);
+            this.layer.childNode(objects_node);
             objects_node.visible = true;
          }
 
@@ -85,11 +86,11 @@ phina.define("MapRenderer", {
 
          //CAMERA TEST
          if(floor_node.area_pos.equals(Vector2(1,1)) && floor_node.node_pos.equals(Vector2(25,25))){
-            this.layer.setPosition(SCREEN_WIDTH/2 + 40 , -3040 + SCREEN_HEIGHT/2);
-            console.log(floor_node);
+            //this.layer.setPosition(SCREEN_WIDTH/2 + 40 , -3040 + SCREEN_HEIGHT/2);
+            //console.log(floor_node);
          }
 
       }.bind(this));
-      var c = CircleShape({radius:10}).addChildTo(this.layer).setPosition(-40 , 3040);
+      //var c = CircleShape({radius:10}).addChildTo(this.layer).setPosition(-40 , 3040);
    },
 });

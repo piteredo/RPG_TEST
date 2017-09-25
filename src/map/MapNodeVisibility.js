@@ -15,6 +15,8 @@ phina.define("MapNodeVisibility", {
 
 
    updateVisibility: function(valid_map_data , new_focus_node_pos , new_focus_area_pos){
+      //@param valid_map_data = 中身入りマップデータ
+      //@param new_focus_node(area)_pos =
 
       //絶対座標を求める
       //
@@ -36,11 +38,8 @@ phina.define("MapNodeVisibility", {
       var corner_list = this._getCornerPosList(abs_pos);
 
       var target_nodes = this._getTargetNodes(corner_list);
-
+      
       var data = this._sortNodeStatus(target_nodes);
-
-
-//console.log(corner_list);
 
 
       return data;

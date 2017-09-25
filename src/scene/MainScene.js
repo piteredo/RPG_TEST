@@ -17,6 +17,9 @@ phina.define('MainScene', {
       //以下テスト中
       this.AssetLayer = AssetLayer().addChildTo(this);
       this.MapManager = MapManager(this.AssetLayer);
+      this.Camera = Camera(this.AssetLayer);
+
+      this.Camera.updateCameraPos(76,76);//仮
 
       /*
       this.map_render_m = MapRenderManager(); //マップ描画マネージャクラス

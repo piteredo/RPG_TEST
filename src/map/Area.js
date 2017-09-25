@@ -7,8 +7,8 @@
 //
 phina.define("Area", {
    //MapManager_Class に呼ばれたときだけ働く。
-   //valid_map_data を預かって、指定されたエリアデータを消し去って返す
-   //valid_map_data を預かって、指定されたエリアデータを構築して詰め込んで返す
+   //map_data を預かって、指定されたエリアデータを消し去って返す
+   //map_data を預かって、指定されたエリアデータを構築して詰め込んで返す
    //エリアデータの構築は、area_asset(TiledMapEditorのタイルマップデータ) 読み込み、各ノード情報を MapNode_Class から貰って行う。
 
 
@@ -21,8 +21,8 @@ phina.define("Area", {
    },
 
 
-   unloadAreas: function(valid_map_data , unload_list){
-      var data = valid_map_data;
+   unloadAreas: function(map_data , unload_list){
+      var data = map_data;
       var a = unload_list;
       (a.length).times(function(i){
          var x = a[i].x;
@@ -33,8 +33,8 @@ phina.define("Area", {
    },
 
 
-   loadAreas: function(valid_map_data , load_list){
-      var data = valid_map_data;
+   loadAreas: function(map_data , load_list){
+      var data = map_data;
       var a = load_list;
       (a.length).times(function(i){
          var x = a[i].x;
@@ -51,15 +51,16 @@ phina.define("Area", {
       var maptip_set_list = area_asset.getMaptipSetList();
 
       var floor_node_a = area_asset.getMapData(MAP_FLOOR_LAYER_NAME);
-      var floor_node_data = this._buildNodeDataList(floor_node_a , maptip_set_list , area_pos);
+      var floor_node_data = this._buildLayerDataList(floor_node_a , maptip_set_list , area_pos);
 
       var collision_node_a = area_asset.getMapData(MAP_COLLISION_LAYER_NAME);
-      var collision_node_data = this._buildNodeDataList(collision_node_a , maptip_set_list , area_pos);
+      var collision_node_data = this._buildLayerDataList(collision_node_a , maptip_set_list , area_pos);
 
       var objects_node_a = area_asset.getMapData(MAP_OBJECTS_LAYER_NAME);
-      var objects_node_data = this._buildNodeDataList(objects_node_a , maptip_set_list , area_pos);
+      var objects_node_data = this._buildLayerDataList(objects_node_a , maptip_set_list , area_pos);
 
-      var area_data = {floor:floor_node_data , collision:collision_node_data , objects:objects_node_data};
+      var area_data = this._buildNodeDataList(floor_node_data , collision_node_data , objects_node_data);
+
       return area_data;
    },
 
@@ -74,7 +75,7 @@ phina.define("Area", {
    },
 
 
-   _buildNodeDataList: function(node_list, maptip_set_list, area_pos) {
+   _buildLayerDataList: function(node_list, maptip_set_list, area_pos) {
       var a = [];
       (node_list.length).times(function(y){
          a.push([]);
@@ -107,10 +108,30 @@ phina.define("Area", {
             firstgid = maptip_set_list[i].firstgid;
          }
       });
-
       return {
          name: name,
          firstgid: firstgid
       };
    },
+
+
+   _buildNodeDataList: function(floor_node_data , collision_node_data , objects_node_data){
+      var f_l = floor_node_data;
+      var c_l = collision_node_data;
+      var o_l = objects_node_data;
+
+      var a = [];
+      (NODE_LENGTH).times(function(y){
+         a.push([]);
+         (NODE_LENGTH).times(function(x){
+            var f = f_l[x][y];
+            var c = c_l[x][y];
+            var o = o_l[x][y];
+            a[y][x] = {floor:f , collision:c , objects:o};
+         });
+      });
+      return a;
+   },
+
+
 });
