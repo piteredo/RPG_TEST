@@ -38,6 +38,11 @@ phina.define("MapNodeVisibility", {
       var target_nodes = this._getTargetNodes(corner_list);
 
       var data = this._sortNodeStatus(target_nodes);
+
+
+//console.log(corner_list);
+
+
       return data;
    },
 
@@ -53,27 +58,27 @@ phina.define("MapNodeVisibility", {
 
    _getCornerPosList: function(abs_pos){
       var list = {};
-      var corner_list = ["left_top" , "left_bottom" , "right_top" , "right_bottom"];
+      var dir_list = ["left_top" , "left_bottom" , "right_top" , "right_bottom"];
       var dir_vertical;
       var dir_horizontal;
 
-      (corner_list.length).times(function(i){
-         switch (corner_list[i]) {
+      (dir_list.length).times(function(i){
+         switch (dir_list[i]) {
             case "left_top":
-               dir_vertical = Vector2.TOP; //トップビューでの方角
-               dir_horizontal = Vector2.LEFT;
+               dir_vertical = Vector2.TOP.clone(); //トップビューでの方角
+               dir_horizontal = Vector2.LEFT.clone();
                break;
             case "left_bottom":
-               dir_vertical = Vector2.BOTTOM;
-               dir_horizontal = Vector2.LEFT;
+               dir_vertical = Vector2.BOTTOM.clone();
+               dir_horizontal = Vector2.LEFT.clone();
                break;
             case "right_top":
-               dir_vertical = Vector2.TOP;
-               dir_horizontal = Vector2.RIGHT;
+               dir_vertical = Vector2.TOP.clone();
+               dir_horizontal = Vector2.RIGHT.clone();
                break;
             case "right_bottom":
-               dir_vertical = Vector2.BOTTOM;
-               dir_horizontal = Vector2.RIGHT;
+               dir_vertical = Vector2.BOTTOM.clone();
+               dir_horizontal = Vector2.RIGHT.clone();
                break;
          }
 
@@ -89,7 +94,7 @@ phina.define("MapNodeVisibility", {
          pos.add(dir_horizontal.mul(dis_horizontal));
 
          //{DIR:pos , ...}
-         list[corner_list[i]] = pos;
+         list[dir_list[i]] = pos;
       });
 
       var padding_max = this._getPadding(list);

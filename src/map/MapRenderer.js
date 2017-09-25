@@ -81,6 +81,9 @@ phina.define("MapRenderer", {
             objects_node.visible = true;
          }
 
+
+
+         //CAMERA TEST
          if(floor_node.area_pos.equals(Vector2(1,1)) && floor_node.node_pos.equals(Vector2(25,25))){
             this.layer.setPosition(SCREEN_WIDTH/2 + 40 , -3040 + SCREEN_HEIGHT/2);
             console.log(floor_node);

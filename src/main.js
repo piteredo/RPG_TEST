@@ -8,8 +8,8 @@
 phina.globalize();
 
 // Const
-SCREEN_WIDTH = 640*0.7; //決定させる(480*720?)
-SCREEN_HEIGHT = 960*0.7;
+SCREEN_WIDTH = 480; //決定させる(480*720?)
+SCREEN_HEIGHT = 720;
 NODE_WIDTH = 80;
 NODE_HEIGHT = 40;
 NODE_LENGTH = 51;

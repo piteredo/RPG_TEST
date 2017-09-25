@@ -1,5 +1,6 @@
 Number.prototype.$method("ratio", function(value){
-  var self = target = 1;
+  var self = 1;
+  var target = 1;
   if(this > value) self = this / value;
   else target = value / this;
   return [self , target];
@@ -31,7 +32,7 @@ phina.geom.Vector2.prototype.getDirection = function() {
   else if(angle<292.5) return "TOP";
   else if(angle<337.5) return "RIGHT_TOP";
   console.log("error getDirection angle doesn't much"); return false;
-}
+};
 
 phina.geom.Vector2.ZERO = phina.geom.Vector2(0, 0);
 phina.geom.Vector2.RIGHT = phina.geom.Vector2(1, -1);
