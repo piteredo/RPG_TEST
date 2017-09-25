@@ -28,7 +28,7 @@ phina.define("Camera", {
       //@arug = Camera's target_pos
 
       var px_pos = this._getPxPos(abs_x , abs_y);
-      this.layer.updatePos(px_pos.x , px_pos.y);
+      this.layer.updatePos(px_pos.x , px_pos.y , this.camera_pos);
    },
 
 

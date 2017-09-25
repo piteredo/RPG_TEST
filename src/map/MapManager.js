@@ -74,28 +74,26 @@ phina.define("MapManager", {
          this.ctr_area_pos.equals(new_ctr_area_pos)
       ) return;
 
-      var update_nodes = this.Visibility.updateVisibility(this.map_data, new_ctr_node_pos, new_ctr_area_pos);
-      this.Renderer.render(update_nodes.child);
+      var abs_pos = this.getAbsPos(new_ctr_area_pos, new_ctr_node_pos);
+      var update_nodes = this.Visibility.updateVisibility(this.map_data, abs_pos);
+      this.Renderer.render(update_nodes.child , this.grid);
    },
 
 
-   getNode: function(abs_x, abs_y) {
+   getNode: function(abs_x, abs_y, layer_name) {
       var x = abs_x;
       var y = abs_y;
-
       if (x < 0 || y < 0 || x >= AREA_LENGTH * NODE_LENGTH || y >= AREA_LENGTH * NODE_LENGTH) return false;
 
       var area_pos = this._getRelPosData(x, y).area_pos;
       var node_pos = this._getRelPosData(x, y).node_pos;
 
-      var area = this.map_data[area_pos.y][area_pos.x];
-      var layer = "floor";
-
-      var node = area[node_pos.y][node_pos.x][layer];
+      var node;
+      if(layer_name == "all") node = this.map_data[area_pos.y][area_pos.x][node_pos.y][node_pos.x];
+      else node = this.map_data[area_pos.y][area_pos.x][node_pos.y][node_pos.x][layer_name];
 
       return node;
    },
-
 
 
    _getRelPosData: function(abs_x, abs_y) {
@@ -110,5 +108,15 @@ phina.define("MapManager", {
       };
       return list;
    },
+
+
+   getAbsPos: function(area_pos , node_pos){
+      var n_p = node_pos;
+      var a_p = area_pos;
+      var abs_pos = a_p.mul(NODE_LENGTH).add(n_p);
+
+      return abs_pos;
+   },
+
 
 });
