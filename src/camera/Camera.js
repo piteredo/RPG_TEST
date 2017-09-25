@@ -6,15 +6,11 @@
 //
 //
 phina.define("Camera", {
-   //もらった(どこからもらう？)MAP_ABS_POSデータ(仮想も含む？) が 画面中央(か否か？)にくるよう更新(=ASSET_LAYERを動かす)
-
-   //POS データからPX絶対座標をここで算出するか、NODEを取得して参照するかどちらか？(前者なら仮想も対応できる
-   //画面中央にさせることが基本だけど、一応変動可能にさせておく(追尾対象をあえて右上にするとか)
-   //基本は自キャラのPOSを追尾対象。あとは敵タッチでカメラ追尾などできるように、追尾対象の変更機能をつけておく
-   //POSの受取元は、Map位置更新時MapManagerからか、UI周りからかどちらか？(または追尾対象物をここで管理するか否か)
+   //もらった(どこからもらう？)MAP_ABS_POSデータが camera_pos にくるよう更新(=ASSET_LAYERを動かす)
 
 
    camera_pos : CAMERA_POS, //カメラのターゲットPOS を画面上のどこに表示するかの PX座標
+
 
    init: function(layer){
       this.layer = layer;
@@ -39,7 +35,6 @@ phina.define("Camera", {
       });
       return grid;
    },
-
 
 
    _ratio: function() { //MapRendererとかぶってるので共有させる

@@ -1,7 +1,10 @@
-// asset_layer Class
-
-
-
+//
+//
+// AssetLayer.js
+// 2017 @auther piteredo
+// This Program is MIT license.
+//
+//
 phina.define("AssetLayer", {
    superClass: "DisplayElement",
 
@@ -19,8 +22,7 @@ phina.define("AssetLayer", {
 
 
    updatePos: function(x, y , camera_pos) {
-      console.log(camera_pos);
-      this.setPosition(SCREEN_WIDTH/2 - x , SCREEN_HEIGHT/2 - y); //camera_posから計算するよう書き換え
+      this.setPosition(camera_pos.x - x , camera_pos.y - y);
    },
 
 });

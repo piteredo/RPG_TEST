@@ -26,7 +26,6 @@ phina.define("MapManager", {
       this.Renderer = MapRenderer(this, AssetLayer_Class);
 
       this.grid = this._getMapGrid();
-
       this.map_data = this.AreaList.getAreaList();
 
       this._updateArea(AREA_DEF_POS);
@@ -43,8 +42,8 @@ phina.define("MapManager", {
    },
 
 
-   updateMap: function(camera_pos) {
-      //カメラのtarget_obj(通常は自キャラ)位置に変更があったときは、abs_pos(？)でそれを受け取る
+   updateMap: function(abs_x , abs_y) {
+      //カメラのtarget_obj(通常は自キャラ)位置に変更があったら、abs_pos(？)でそれを受け取る
       //カメラ位置のマップチップと、エリアに変更があるか見極める(外部委託する？)
       //エリアに変更があれば _updateMap に渡す
       //なければ飛ばして、ノードに変更があれば _updateNode を呼ぶ
@@ -64,11 +63,6 @@ phina.define("MapManager", {
 
 
    _updateNode: function(new_ctr_area_pos, new_ctr_node_pos) {
-      //新規カメラ位置と、マップデータを MapNodeVisibility_Class に渡して、マップチップごとに表示の可否を付けて返してもらう
-      //MapRenderer_Class に、可否のついた最終版リストを渡して表示処理(child)してもらう。 【いまここ途中】
-      //(↑Rendererはマップ以外も統括する偉いひとにする？)
-      //最後に focus_area_pos , focus_node_pos を更新しておく
-
       if ( //エリア・ノード共に変更なければつっぱねる
          this.ctr_node_pos.equals(new_ctr_node_pos) &&
          this.ctr_area_pos.equals(new_ctr_area_pos)
@@ -77,6 +71,9 @@ phina.define("MapManager", {
       var abs_pos = this.getAbsPos(new_ctr_area_pos, new_ctr_node_pos);
       var update_nodes = this.Visibility.updateVisibility(this.map_data, abs_pos);
       this.Renderer.render(update_nodes.child , this.grid);
+      //remove_list 内ノードの削除処理
+
+      //最後に ctr_area_pos , ctr_node_pos を更新しておく
    },
 
 

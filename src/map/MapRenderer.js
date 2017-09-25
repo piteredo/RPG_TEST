@@ -37,6 +37,7 @@ phina.define("MapRenderer", {
          var pos_quarter = abs_pos.toQuarter(this.ratio_w, this.ratio_h);
 
 
+         //↓ループに直す
          if(collision_node != null){
             collision_node.setPosition(
                this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,

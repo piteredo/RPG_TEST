@@ -1,6 +1,6 @@
 //
 //
-// MaptipVisibility.js
+// MapNodeVisibility.js
 // 2017 @auther piteredo
 // This Program is MIT license.
 //
@@ -16,23 +16,16 @@ phina.define("MapNodeVisibility", {
 
 
    updateVisibility: function(map_data, new_abs_pos) {
-
-
-      //
-
-      //
-
-      //
-      //そうして対象のマップノードを読み、画面表示範囲内にいるかで、visible=true/false を付けて、リストを返す。
-
+      
       //表示範囲の四角(=スクリーン)の四隅に位置するマップノードのPOSを求める(四隅分を詰めたリスト)。
       var corner_list = this._getCornerPosList(new_abs_pos);
 
+      //↑で得た四隅位置の内側にいるノードを詰めたリストを取得
       var target_nodes = this._getTargetNodes(corner_list);
 
+      //リスト内のノードを全て読み、画面表示範囲内にいるかどうかで、child_list と remove_list に分けてもらい、返す
+      //data = {child_list:nodes , remove_list:nodes}
       var data = this._sortNodeStatus(target_nodes);
-
-
       return data;
    },
 
@@ -108,26 +101,27 @@ phina.define("MapNodeVisibility", {
 
       var horizontal_dir_list = ["GO_LEFT" , "GO_RIGHT"];
       (horizontal_dir_list.length).times(function(i){
-
          var start;
-         var end;
+         var start_x;
+         var end_x;
          var start_y;
          var str;
          switch(horizontal_dir_list[i]){
             case "GO_LEFT":
-               start_x = list.left_top.x;
+               start = list.left_top.x;
+               start_x = start;
                end_x = list.left_bottom.x + 1;
                start_y = list.left_top.y;
                str = "ADD";
                break;
             case "GO_RIGHT":
-               start_x = list.right_top.x;
+               start = list.right_top.x;
+               start_x = start;
                end_x = list.right_bottom.x + 1;
                start_y = list.right_top.y;
                str = "DIM";
                break;
          }
-
          while (1) {
             var counter = 0;
             var y = start_y;
@@ -148,45 +142,56 @@ phina.define("MapNodeVisibility", {
                   break;
             }
          }
-         var padding = Math.abs(start - list.left_top.x);
+         var padding = Math.abs(start - start_x);
          padding_list.push(padding);
       }.bind(this));
 
-
-      var start = list.right_top.y;
-      var end = list.left_top.y + 1;
-      while (1) {
-         var counter = 0;
-         var x = list.right_top.x;
-         for (y = start; y < end; y++) {
-            var node = this.Manager.getNode(x, y, "floor");
-            if (node && node.visible) counter++;
-            x--;
+      var vertical_dir_list = ["GO_TOP" , "GO_BOTTOM"];
+      (vertical_dir_list.length).times(function(i){
+         var start;
+         var start_y;
+         var end_y;
+         var start_x;
+         var str;
+         switch(vertical_dir_list[i]){
+            case "GO_TOP":
+               start = list.right_top.y;
+               start_y = start;
+               end_y = list.left_top.y + 1;
+               start_x = list.right_top.x;
+               str = "DIM";
+               break;
+            case "GO_BOTTOM":
+               start = list.right_bottom.y;
+               start_y = start;
+               end_y = list.left_bottom.y + 1;
+               start_x = list.right_bottom.x;
+               str = "ADD";
+               break;
          }
-         if (counter == 0) break;
-         start--;
-         end--;
-      }
-      var padding_top = Math.abs(start - list.right_top.y);
-      padding_list.push(padding_top);
-
-
-      var start = list.right_bottom.y;
-      var end = list.left_bottom.y + 1;
-      while (1) {
-         var counter = 0;
-         var x = list.right_bottom.x;
-         for (y = start; y < end; y++) {
-            var node = this.Manager.getNode(x, y, "floor");
-            if (node && node.visible) counter++;
-            x--;
+         while (1) {
+            var counter = 0;
+            var x = start_x;
+            for (var y = start_y; y < end_y; y++) {
+               var node = this.Manager.getNode(x, y, "floor"); //floor_layerのノードを取得
+               if (node && node.visible) counter++;
+               x--;
+            }
+            if (counter == 0) break;
+            switch(str){
+               case "ADD":
+                  start_y++;
+                  end_y++;
+                  break;
+               case "DIM":
+                  start_y--;
+                  end_y--;
+                  break;
+            }
          }
-         if (counter == 0) break;
-         start++;
-         end++;
-      }
-      var padding_bottom = Math.abs(list.right_bottom.y - start);
-      padding_list.push(padding_bottom);
+         var padding = Math.abs(start - start_y);
+         padding_list.push(padding);
+      }.bind(this));
 
 
       var padding_max = padding_list.most().max;
