@@ -7,7 +7,7 @@
 
 var ASSETS = {
    image: {
-      "char_a": "assets/image/character/char_a.png",
+      "hero_0": "assets/image/character/char_a.png",
       "maptip_step0_1": "assets/image/maptip/maptip_step0_1.png",
       "maptip_step0_2": "assets/image/maptip/maptip_step0_2.png",
       "object_1": "assets/image/maptip/object_1.png",

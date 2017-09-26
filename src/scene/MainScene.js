@@ -16,9 +16,13 @@ phina.define('MainScene', {
 
       //以下テスト中
       this.AssetLayer = AssetLayer().addChildTo(this);
+      
       this.MapManager = MapManager(this.AssetLayer);
-      this.Camera = Camera(this.AssetLayer);
 
+      this.CharManager = CharManager(this.AssetLayer);
+      this.CharManager.displayChar("HERO", AREA_DEF_POS, NODE_DEF_POS, 0);
+
+      this.Camera = Camera(this.AssetLayer);
       this.Camera.updateCameraPos(76,76);//仮
 
       /*
