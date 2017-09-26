@@ -35,7 +35,7 @@ phina.define("MapRenderer", {
 
          var abs_pos = this.Manager.getAbsPos(floor_node.area_pos , floor_node.node_pos);
          var pos_quarter = abs_pos.toQuarter(this.ratio_w, this.ratio_h);
-
+         
 
          //↓ループに直す
          if(collision_node != null){
@@ -56,9 +56,10 @@ phina.define("MapRenderer", {
 
 
          if(objects_node != null){
+            objects_node.origin.y = 0.25; //ノードのオリジン全サイズでも対応できるよう要調整
             objects_node.setPosition(
                this.grid.span(pos_quarter.x) - NODE_WIDTH / 2,
-               this.grid.span(pos_quarter.y)
+               this.grid.span(pos_quarter.y) - 40
             );
             this.layer.childNode(objects_node);
             objects_node.visible = true;

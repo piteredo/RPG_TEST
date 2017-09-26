@@ -16,7 +16,7 @@ phina.define("MapNodeVisibility", {
 
 
    updateVisibility: function(map_data, new_abs_pos) {
-      
+
       //表示範囲の四角(=スクリーン)の四隅に位置するマップノードのPOSを求める(四隅分を詰めたリスト)。
       var corner_list = this._getCornerPosList(new_abs_pos);
 

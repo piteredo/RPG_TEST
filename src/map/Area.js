@@ -84,10 +84,12 @@ phina.define("Area", {
             var maptip_set_data = this._getMaptipSetData(maptip_set_list, maptip_id);
             var maptip_set_name = maptip_set_data.name;
             var firstgid = maptip_set_data.firstgid;
+            var tilewidth = maptip_set_data.tilewidth;
+            var tileheight = maptip_set_data.tileheight;
             var tip_x = x;
             var tip_y = y;
 
-            var node = this.MapNode.getMapNodeData(maptip_id, maptip_set_name, firstgid, tip_x, tip_y, area_pos.x, area_pos.y);
+            var node = this.MapNode.getMapNodeData(maptip_id, maptip_set_name, firstgid, tilewidth, tileheight, tip_x, tip_y, area_pos.x, area_pos.y);
 
             a[y].push(node);
 
@@ -106,11 +108,15 @@ phina.define("Area", {
          if (maptip_id >= maptip_set_list[i].firstgid) {
             name = maptip_set_list[i].name;
             firstgid = maptip_set_list[i].firstgid;
+            tilewidth = maptip_set_list[i].tilewidth;
+            tileheight = maptip_set_list[i].tileheight;
          }
       });
       return {
          name: name,
-         firstgid: firstgid
+         firstgid: firstgid,
+         tilewidth: tilewidth,
+         tileheight: tileheight
       };
    },
 
