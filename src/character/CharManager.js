@@ -59,7 +59,8 @@ phina.define("CharManager",{
       }.bind(this));
       this.layer.addChildAt(char, n+1);
 
-      char.setPosition(floor.x , floor.y-28-10); //超仮
+      char.setOrigin(0.5 , 1.0);
+      char.setPosition(floor.x , floor.y); //超仮
    },
 
 });
