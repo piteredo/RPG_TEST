@@ -79,7 +79,7 @@ phina.define("MapRenderer", {
          floor_node.visible = true;
 
 
-         //別のクラスに作り直す
+         //別のクラス(またはメソッド)に作り直す？
          if(objects_node != null){
             objects_node.setOrigin(0.5 , 1);
             objects_node.setPosition(
