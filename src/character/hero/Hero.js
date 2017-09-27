@@ -49,7 +49,7 @@ phina.define("Hero",{
 
    _loadHeroNode: function(char_id){
       var asset = this._loadAsset(char_id);
-      var node = Sprite(asset , 60, 81);
+      var node = Sprite(asset , 60, 80);
       return node;
    },
 
