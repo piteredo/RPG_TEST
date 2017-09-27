@@ -44,9 +44,22 @@ phina.define("CharManager",{
          console.log("error");
          return;
       }
-      char.addChildTo(this.layer);
 
-      char.setPosition(-40 , 3000); //超仮
+      var area_pos = char.area_pos;
+      var node_pos = char.node_pos;
+      var floor;
+      var n;
+      (this.layer.children.length).times(function(i){
+         var a_p = this.layer.children[i].area_pos;
+         var n_p = this.layer.children[i].node_pos;
+         if(area_pos.equals(a_p) && node_pos.equals(n_p)){
+            floor = this.layer.children[i];
+            n = i;
+         }
+      }.bind(this));
+      this.layer.addChildAt(char, n+1);
+
+      char.setPosition(floor.x , floor.y-28-10); //超仮
    },
 
 });
