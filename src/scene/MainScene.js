@@ -14,33 +14,76 @@ phina.define('MainScene', {
          backgroundColor: MAINSCENE_BG_COLOR
       });
 
-      //以下テスト中
+      //仮
+      var focus_uuid = HERO_UUID;
+      var focus_area_pos = AREA_DEF_POS;
+      var focus_node_pos = NODE_DEF_POS;
+
+      //クラス初期化
       this.AssetLayer = AssetLayer().addChildTo(this);
-      
-      this.MapManager = MapManager(this.AssetLayer);
-
-      this.CharManager = CharManager(this.AssetLayer);
-      this.CharManager.displayChar("HERO", AREA_DEF_POS, NODE_DEF_POS, 0);
-
+      this.UiLayer = UiLayer().addChildTo(this);
+      //
       this.Camera = Camera(this.AssetLayer);
-      this.Camera.updateCameraPos(76,76);//仮
+      this.Renderer = Renderer(this.AssetLayer , this.UiLayer);
+      //
+      this.MapManager = MapManager();
+      this.CharManager = CharManager();
+      this.UiManager = UiManager();
 
-      /*
-      this.map_render_m = MapRenderManager(); //マップ描画マネージャクラス
-      this.map_char_m = MapCharManager(); //マップ＋自キャラ仲介クラス
-      this.ctrl_char_m = ControllerCharManager(); //コントローラ＋自キャラ仲介クラス
-      this.touch_m = TouchManager(); //画面タッチマネージャクラス
-      this.ui_m = UIManager(); //UIマネージャクラス
+      //表示の初期化
+      this._initDisplay(focus_uuid, focus_area_pos, focus_node_pos);
+   },
 
-      this.map = Map(this.map_render_m , this.map_char_m , this.touch_m , this.ui_m).addChildTo(this); //マップクラス
-      this.char = Char(this.map_char_m , this.ctrl_char_m); //自キャラクラス
-      this.ui = UI(this.ui_m).addChildTo(this); //UIクラス
-      this.controller = Controller(this.ctrl_char_m , this.touch_m).addChildTo(this); //コントローラクラス
 
-      this.map_char_m.setup(); //マップ＋自キャラ仲介クラス、の初期化
-      this.ctrl_char_m.setup(); //コントローラ＋自キャラ仲介クラス、の初期化
-      this.touch_m.setup(); //画面タッチマネージャクラス、初期化
-      */
+   _initDisplay: function(focus_uuid, focus_area_pos, focus_node_pos){
+      this._displayUi();
+      this._displayMap(focus_uuid, focus_area_pos, focus_node_pos);
+      this._displayChar(focus_uuid, focus_area_pos, focus_node_pos);
+   },
+
+
+   _displayUi: function(){
+      var ui_data_list = this.UiManager.getUiDataList();
+      this.Renderer.renderUi(ui_data_list);
+   },
+
+
+   _displayMap: function(focus_uuid, focus_area_pos, focus_node_pos){
+      var map_data = this.MapManager.getMapData(focus_area_pos);
+      this.Camera.updateCameraPos(focus_uuid, focus_area_pos, focus_node_pos);
+      this.UiManager.updateMapUi(map_data, focus_area_pos, focus_node_pos);
+      var visible_node_list = this.Camera.getVisibleNodeList(map_data, focus_area_pos, focus_node_pos);
+      this.Renderer.renderMap(visible_node_list);
+   },
+
+
+   _displayChar: function(focus_uuid, focus_area_pos, focus_node_pos){
+      this._displayHero(focus_uuid, focus_area_pos, focus_node_pos);
+      this._displayNpc();
+      this._displayEnemy();
+   },
+
+
+   _displayHero: function(focus_uuid, focus_area_pos, focus_node_pos){
+      var hero_data_list = this.CharManager.getHeroData(focus_uuid, focus_area_pos, focus_node_pos); //[{hero_data}] only 1 length
+      this.UiManager.updateHeroUi(hero_data_list);
+      this.Renderer.renderChar(hero_data_list);
+   },
+
+
+   _displayNpc: function(){
+      var npc_list = this.MapManager.getNpcList(); //中身が npc_id, area/node_pos のみのNPCリスト
+      var npc_data_list = this.CharManager.getNpcData(npc_list);
+      this.UiManager.updateNpcUi(npc_data_list);
+      this.Renderer.renderChar(npc_data_list);
+   },
+
+
+   _displayEnemy: function(){
+      var enemy_list = this.MapManager.getEnemyList(); //中身が enemy_id, area/node_pos のみの敵リスト
+      var enemy_data_list = this.CharManager.getEnemyData(enemy_list);
+      this.UiManager.updateEnemyUi(enemy_data_list);
+      this.Renderer.renderChar(enemy_data_list);
    },
 
 });

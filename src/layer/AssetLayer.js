@@ -16,13 +16,27 @@ phina.define("AssetLayer", {
    },
 
 
-   childNode: function(node) {
+   updatePos: function(ctr_px_pos) {
+      //Camera に呼ばれる
+      //中央に来るべき px_pos が届くので -1 を掛けた位置に自身を動かす
+      this.setPosition(ctr_px_pos.x * -1 , ctr_px_pos.y * -1);
+   },
+
+
+   childMapNode: function(node) {
+      //Renderer に呼ばれる
       node.addChildTo(this);
    },
 
 
-   updatePos: function(x, y , camera_pos) {
-      this.setPosition(camera_pos.x - x , camera_pos.y - y);
+   removeMapNode: function(node) {
+      //Renderer に呼ばれる
+      this.removeChild(node);
    },
 
+
+   childCharNode: function(node, index){
+      //Renderer に呼ばれる
+      this.addChildAt(node, index);
+   },
 });

@@ -8,59 +8,58 @@
 phina.define("CharManager",{
 
 
-   init: function(layer){
-      this.layer = layer;
+   init: function(){
       this.HeroManager = HeroManager();
-      //this.EnemyManager = EnemyManager();
-      //this.NPCManager = NPCManager();
+      this.EnemyManager = EnemyManager();
+      this.NpcManager = NpcManager();
    },
 
-   displayChar: function(type, area_pos, node_pos, char_id){
-      //@param type = (HERO, ENEMY, NPC)
-      //@param char_id = char_no (not a unique_id)
 
-      var unique_id = Random.uuid(); //phina.util.Random
-      var char = null;
+   getHeroData: function(uuid, area_pos, node_pos, char_id){ //char_id未設定
+      //MainScene に呼ばれる
+      var id = char_id || 0; //仮
+      var abs_pos = this._getRelPosToAbsPos(area_pos, node_pos);
+      var hero_data_list = this.HeroManager.getHeroDataList(uuid, area_pos, node_pos, abs_pos, id); //[{hero_data}] only 1 length
 
-      switch(type){
-         case "HERO":
-            char = this.HeroManager.displayHero(area_pos, node_pos, char_id, unique_id);
-            break;
-         case "ENEMY":
-            char = this.EnemyManager.displayEnemy(area_pos, node_pos, char_id, unique_id);
-            break;
-         case "NPC":
-            char = this.NPCManager.displayNPC(area_pos, node_pos, char_id, unique_id);
-            break;
-         default:
-            console.log("error");
-      }
-
-      this._child(char);
+      return hero_data_list;
    },
 
-   _child: function(char){
-      if(char == null){
-         console.log("error");
-         return;
-      }
 
-      var area_pos = char.area_pos;
-      var node_pos = char.node_pos;
-      var floor;
-      var n;
-      (this.layer.children.length).times(function(i){
-         var a_p = this.layer.children[i].area_pos;
-         var n_p = this.layer.children[i].node_pos;
-         if(area_pos.equals(a_p) && node_pos.equals(n_p)){
-            floor = this.layer.children[i];
-            n = i;
-         }
+   _getRelPosToAbsPos: function(area_pos , node_pos){ //汎用化？
+      //Camera に呼ばれる
+      var x = node_pos.x + (area_pos.x * NODE_LENGTH);
+      var y = node_pos.y + (area_pos.y * NODE_LENGTH);
+      var abs_pos = Vector2(x, y);
+      return abs_pos;
+   },
+
+
+   getNpcData: function(npc_list){
+      //MainScene に呼ばれる
+      var list = npc_list;
+
+      var updated_list = [];
+      (list.length).times(function(i){
+         var node = list[i];
+         node.abs_pos = this._getRelPosToAbsPos(node.area_pos, node.node_pos);
+         updated_list.push(node);
       }.bind(this));
-      this.layer.addChildAt(char, n+1);
-
-      char.setOrigin(0.5 , 1.0);
-      char.setPosition(floor.x , floor.y); //超仮
+      
+      return this.NpcManager.getNpcDataList(updated_list);
    },
 
+
+   getEnemyData: function(enemy_list){
+      //MainScene に呼ばれる
+      var list = enemy_list;
+
+      var updated_list = [];
+      (list.length).times(function(i){
+         var node = list[i];
+         node.abs_pos = this._getRelPosToAbsPos(node.area_pos, node.node_pos);
+         updated_list.push(node);
+      }.bind(this));
+
+      return this.EnemyManager.getEnemyDataList(updated_list);
+   },
 });

@@ -6,38 +6,37 @@
 //
 //
 phina.define("AreaList", {
-   //MapManager_Class に呼ばれたときだけ働く
-   //マップデータ本体は保持せず、エリアリストの二次元配列と、その中に各エリアのロード状況(0=false or 1=true)のみバックアップをとる
-
 
    area_list: null,
 
-
    init: function() {
-      //エリアリストのフォーマットを作成
+      //エリアリストの雛形を作成
       var a = [];
       (AREA_LENGTH).times(function(y) {
          a.push([]);
          (AREA_LENGTH).times(function(x) {
-            a[y].push(0);
+            a[y].push(false);
          });
       });
       this.area_list = a;
    },
 
 
-   getAreaList: function() {
+   getAreaListFormat: function() {
+      //MapManager に呼ばれる
       return this.area_list.clone(true);
    },
 
 
-   getUpdateData: function(new_ctr_area_pos) {
-      var new_pos = new_ctr_area_pos;
+   getAreaListUpdate: function(new_focus_area_pos){
+      //MapManager に呼ばれる
+
+      var new_pos = new_focus_area_pos;
       var old_areas = this._getOldAreas();
       var new_areas = this._getNewAreas(new_pos);
       var update_data = this._getAreasDiff(old_areas, new_areas);
 
-      this._updateAreaList(update_data); //次回呼ばれたときのために更新された area_list のバックアップ
+      this._updateAreaListFormat(update_data); //次回呼ばれたときのために更新された area_list 雛形のバックアップ
 
       return update_data;
    },
@@ -47,7 +46,7 @@ phina.define("AreaList", {
       var a = [];
       (this.area_list.length).times(function(y) {
          (this.area_list.length).times(function(x) {
-            if (this.area_list[y][x] != 0) a.push(Vector2(x, y));
+            if (this.area_list[y][x] != false) a.push(Vector2(x, y));
          }.bind(this));
       }.bind(this));
 
@@ -55,8 +54,8 @@ phina.define("AreaList", {
    },
 
 
-   _getNewAreas: function(new_ctr_area_pos) {
-      var new_pos = new_ctr_area_pos;
+   _getNewAreas: function(new_focus_area_pos) {
+      var new_pos = new_focus_area_pos;
       var a = [new_pos];
       var dir_a = ["RIGHT", "RIGHT_BOTTOM", "BOTTOM", "LEFT_BOTTOM", "LEFT", "LEFT_TOP", "TOP", "RIGHT_TOP"];
 
@@ -95,7 +94,7 @@ phina.define("AreaList", {
    },
 
 
-   _updateAreaList: function(update_data) {
+   _updateAreaListFormat: function(update_data) {
       //update_data = { unload:[area_pos , ...] , load:[area_pos , ...]}
 
       var list = ["unload", "load"];
@@ -106,8 +105,8 @@ phina.define("AreaList", {
          (a.length).times(function(v) {
             var x = a[v].x;
             var y = a[v].y;
-            if (list[i] == "unload") this.area_list[y][x] = 0;
-            if (list[i] == "load") this.area_list[y][x] = 1;
+            if (list[i] == "unload") this.area_list[y][x] = false;
+            if (list[i] == "load") this.area_list[y][x] = true;
          }.bind(this));
       }.bind(this));
    },

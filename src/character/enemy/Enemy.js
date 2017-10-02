@@ -28,7 +28,7 @@ phina.define("Enemy",{
 
 
    init: function(){
-      this.superInt();
+      this.superInit();
    },
 
 });

@@ -5,7 +5,7 @@
 // This Program is MIT license.
 //
 //
-phina.define("NPC",{
+phina.define("Npc",{
    superClass: "Char",
 
 
@@ -16,6 +16,6 @@ phina.define("NPC",{
 
 
    init: function(){
-      this.superInt();
+      this.superInit();
    },
 });

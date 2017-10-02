@@ -1,53 +1,56 @@
 //
 //
-// Hero.js
+// Enemy_A.js
 // 2017 @auther piteredo
 // This Program is MIT license.
 //
 //
-phina.define("Hero",{
-   superClass: "Char",
+phina.define("Enemy_A",{
+   superClass: "Enemy",
 
 
-   //全共通
-   name: CHAR_HERO_NAME,
-   level: 2,
-   hp: 12,
-   hp_full: 15,
-   mp: 4,
-   mp_full: 14,
+   char_id: 0,
+   name: "enemy_a",
+   level: 3,
+   hp: 100,
+   hp_full: 120,
+   mp: 20,
+   mp_full: 30,
    //
-   area_pos: AREA_DEF_POS,
-   node_pos: NODE_DEF_POS,
-
-   //Hero のみ
-   exp: 4,
-   exp_full: 20,
-   money: 50,
-   item: [], //GET ITEM_LIST
-   equip: [], //GET EQUIP_LIST
-
-   //Hero, Enemy のみ
-   str: 23,
-   def: 67,
-   int: 43,
-   dex: 77,
-   crt: 2,
+   str: 4,
+   def: 3,
+   int: 5,
+   dex: 2,
+   crt: 6,
+   //
+   type: "PASSIVE", //PASSIVE or ACTIVE
+   track_dist: 10, //DIST FROM TARGET (ACTIVE_SCENE)
+   exp_given: 72,
+   item_given: ["potato", "juice"], //？
 
 
    init: function(){
       this.superInit();
    },
 
+   //ATTACH UNIQUE_ID
+   //GET MOVE_AREA
+   //GET MONITOR_AREA (for active enemy)
+   //GET FST_POS(AREA / NODE)
+   //ASSET_NAME?
+   //VISIBILITY BE TRUE
 
-   getHeroNode: function(uuid, area_pos, node_pos, abs_pos, char_id){
-      var sprite = this._loadHeroSprite(char_id);
+
+   getNodeData: function(char_id, area_pos, node_pos, abs_pos){
+      //EnemyManager に呼ばれる
+      var sprite = this._loadSprite(char_id);
+      var uuid = Random.uuid(); //phina.util.Random
       var node = this._attachNodeProperty(sprite, uuid, area_pos, node_pos, abs_pos, char_id);
 
       return node;
    },
 
-   _loadHeroSprite: function(char_id){
+   _loadSprite: function(char_id){
       var asset = this._loadAsset(char_id);
       var node = Sprite(asset , 60, 80); //自動計算にする
       return node;
@@ -59,7 +62,7 @@ phina.define("Hero",{
          console.log("error");
          return;
       }
-      var label = "hero_" + char_id;
+      var label = "enemy_" + char_id;
       var asset = phina.asset.AssetManager.get("image", label);
       return asset;
    },
@@ -73,9 +76,8 @@ phina.define("Hero",{
       node.char_id = char_id;
       node.visible = false;
       node.setOrigin(0.5, 1); //自動計算にする
-      node.frameIndex = 1;
+      node.frameIndex = 1; //自動計算にする
 
       return node;
    },
-
 });

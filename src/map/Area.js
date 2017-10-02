@@ -6,36 +6,21 @@
 //
 //
 phina.define("Area", {
-   //MapManager_Class に呼ばれたときだけ働く。
-   //map_data を預かって、指定されたエリアデータを消し去って返す
-   //map_data を預かって、指定されたエリアデータを構築して詰め込んで返す
-   //エリアデータの構築は、area_asset(TiledMapEditorのタイルマップデータ) 読み込み、各ノード情報を MapNode_Class から貰って行う。
-
-
    superClass: "DisplayElement",
 
 
    init: function() {
       this.superInit();
+
+      //子クラスの初期化
       this.MapNode = MapNode();
    },
 
 
-   unloadAreas: function(map_data , unload_list){
+   loadAreas: function(map_data , load_area_list){
+      //MapManager に呼ばれる
       var data = map_data;
-      var a = unload_list;
-      (a.length).times(function(i){
-         var x = a[i].x;
-         var y = a[i].y;
-         data[y][x] = null;
-      });
-      return data;
-   },
-
-
-   loadAreas: function(map_data , load_list){
-      var data = map_data;
-      var a = load_list;
+      var a = load_area_list;
       (a.length).times(function(i){
          var x = a[i].x;
          var y = a[i].y;
@@ -46,20 +31,49 @@ phina.define("Area", {
    },
 
 
+   unloadAreas: function(map_data , unload_area_list){
+      //MapManager に呼ばれる
+      var data = map_data;
+      var a = unload_area_list;
+      (a.length).times(function(i){
+         var x = a[i].x;
+         var y = a[i].y;
+         data[y][x] = null;
+      });
+      return data;
+   },
+
+
    _buildAreaData: function(area_pos) {
+
+      //メソッド分割してNPC,Enemy呼び出しと共有する
+
+
+      //tmxタイルマップデータを大元を読み込み
       var area_asset = this._loadAreaAsset(area_pos);
+
+      //このエリアで使っているタイルセット画像の一覧
       var maptip_set_list = area_asset.getMaptipSetList();
 
-      var floor_node_a = area_asset.getMapData(MAP_FLOOR_LAYER_NAME);
-      var floor_node_data = this._buildLayerDataList(floor_node_a , maptip_set_list , area_pos);
+      var floor_map_arr = area_asset.getMapData(MAP_FLOOR_LAYER_NAME);
+      var objects_map_arr = area_asset.getMapData(MAP_OBJECTS_LAYER_NAME);
+      var collision_map_arr = area_asset.getMapData(MAP_COLLISION_LAYER_NAME);
 
-      var collision_node_a = area_asset.getMapData(MAP_COLLISION_LAYER_NAME);
-      var collision_node_data = this._buildLayerDataList(collision_node_a , maptip_set_list , area_pos);
+      var area_data = [];
+      (floor_map_arr.length).times(function(y){
+         area_data.push([]);
+         (floor_map_arr[y].length).times(function(x){
 
-      var objects_node_a = area_asset.getMapData(MAP_OBJECTS_LAYER_NAME);
-      var objects_node_data = this._buildLayerDataList(objects_node_a , maptip_set_list , area_pos);
+            var floor_maptip_id = floor_map_arr[y][x];
+            var objects_maptip_id = objects_map_arr[y][x];
+            var collision_maptip_id = collision_map_arr[y][x];
+            var node_pos = Vector2(x, y);
 
-      var area_data = this._buildNodeDataList(floor_node_data , collision_node_data , objects_node_data);
+            var node = this.MapNode.createMapNode(floor_maptip_id, objects_maptip_id, collision_maptip_id, maptip_set_list, area_pos, node_pos);
+            area_data[y].push(node);
+
+         }.bind(this));
+      }.bind(this));
 
       return area_data;
    },
@@ -75,68 +89,79 @@ phina.define("Area", {
    },
 
 
-   _buildLayerDataList: function(node_list, maptip_set_list, area_pos) {
-      var a = [];
-      (node_list.length).times(function(y){
-         a.push([]);
-         (node_list[y].length).times(function(x){
-            var maptip_id = node_list[y][x];
-            var maptip_set_data = this._getMaptipSetData(maptip_set_list, maptip_id);
-            var maptip_set_name = maptip_set_data.name;
-            var firstgid = maptip_set_data.firstgid;
-            var tilewidth = maptip_set_data.tilewidth;
-            var tileheight = maptip_set_data.tileheight;
-            var tip_x = x;
-            var tip_y = y;
+   getNpcList: function(map_data){
+      //MapManager に呼ばれる
 
-            var node = this.MapNode.getMapNodeData(maptip_id, maptip_set_name, firstgid, tilewidth, tileheight, tip_x, tip_y, area_pos.x, area_pos.y);
+      //メソッド分割して↑と共有する
 
-            a[y].push(node);
+      var npc_list = [];
+      (map_data.length).times(function(y){
+         (map_data[y].length).times(function(x){
+            var area_pos = Vector2(x, y);
 
+            //tmxタイルマップデータを大元を読み込み
+            var area_asset = this._loadAreaAsset(area_pos);
+
+            //このエリアで使っているタイルセット画像の一覧
+            var maptip_set_list = area_asset.getMaptipSetList();
+
+            var npc_arr = area_asset.getMapData(MAP_NPC_LAYER_NAME);
+
+            (npc_arr.length).times(function(yy){
+               (npc_arr[yy].length).times(function(xx){
+
+                  var id = npc_arr[yy][xx];
+                  var node_pos = Vector2(xx, yy);
+                  //var area_pos = Vector2(x, y);
+
+                  var node = {id:id, area_pos:area_pos, node_pos:node_pos};
+
+                  if(id >= 0) npc_list.push(node);
+
+               }.bind(this));
+            }.bind(this));
          }.bind(this));
       }.bind(this));
 
-      return a;
+      return npc_list;
    },
 
 
-   _getMaptipSetData: function(maptip_set_list, maptip_id) {
-      var name = null;
-      var firstgid = -1;
+   getEnemyList: function(map_data){
+      //MapManager に呼ばれる
 
-      (maptip_set_list.length).times(function(i){
-         if (maptip_id >= maptip_set_list[i].firstgid) {
-            name = maptip_set_list[i].name;
-            firstgid = maptip_set_list[i].firstgid;
-            tilewidth = maptip_set_list[i].tilewidth;
-            tileheight = maptip_set_list[i].tileheight;
-         }
-      });
-      return {
-         name: name,
-         firstgid: firstgid,
-         tilewidth: tilewidth,
-         tileheight: tileheight
-      };
-   },
+      //メソッド分割して↑と共有する
 
+      var enemy_list = [];
+      (map_data.length).times(function(y){
+         (map_data[y].length).times(function(x){
+            var area_pos = Vector2(x, y);
 
-   _buildNodeDataList: function(floor_node_data , collision_node_data , objects_node_data){
-      var f_l = floor_node_data;
-      var c_l = collision_node_data;
-      var o_l = objects_node_data;
+            //tmxタイルマップデータを大元を読み込み
+            var area_asset = this._loadAreaAsset(area_pos);
 
-      var a = [];
-      (NODE_LENGTH).times(function(y){
-         a.push([]);
-         (NODE_LENGTH).times(function(x){
-            var f = f_l[x][y];
-            var c = c_l[x][y];
-            var o = o_l[x][y];
-            a[y][x] = {floor:f , collision:c , objects:o};
-         });
-      });
-      return a;
+            //このエリアで使っているタイルセット画像の一覧
+            var maptip_set_list = area_asset.getMaptipSetList();
+
+            var enemy_arr = area_asset.getMapData(MAP_ENEMY_LAYER_NAME);
+
+            (enemy_arr.length).times(function(yy){
+               (enemy_arr[yy].length).times(function(xx){
+
+                  var id = enemy_arr[yy][xx];
+                  var node_pos = Vector2(xx, yy);
+                  //var area_pos = Vector2(x, y);
+
+                  var node = {id:id, area_pos:area_pos, node_pos:node_pos};
+
+                  if(id >= 0) enemy_list.push(node);
+
+               }.bind(this));
+            }.bind(this));
+         }.bind(this));
+      }.bind(this));
+
+      return enemy_list;
    },
 
 
