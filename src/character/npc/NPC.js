@@ -1,6 +1,6 @@
 //
 //
-// NPC.js
+// Npc.js
 // 2017 @auther piteredo
 // This Program is MIT license.
 //
