@@ -24,6 +24,15 @@ phina.define("UiController", {
          stroke: "rgb(210,210,200)",
          strokeWidth: 10
       });
+
+      var c = CircleShape({
+         radius: 26,
+         fill: null,
+         stroke: "rgb(210,210,200)",
+         strokeWidth: 10
+      });
+      c.setPosition(100, -100);
+      c.addChildTo(shape);
       return shape;
    },
 

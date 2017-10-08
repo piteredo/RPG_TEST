@@ -23,8 +23,10 @@ phina.define("UiMinimap", {
          height: 100,
          fill: null,
          stroke: "rgb(210,210,200)",
-         strokeWidth: 6
+         strokeWidth: 10,
+         padding: null
       });
+      shape.setOrigin(0, 0);
       return shape;
    },
 

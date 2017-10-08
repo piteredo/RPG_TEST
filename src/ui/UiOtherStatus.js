@@ -18,14 +18,29 @@ phina.define("UiOtherStatus", {
    _createUi: function(){
 
       //仮
-      var shape = RectangleShape({
-         width: 170,
-         height: 100,
-         fill: null,
-         stroke: "rgb(210,210,200)",
-         strokeWidth: 6
+      var tt = Label({
+         text: "99 あなたあなた",
+         fontSize: 14,
+         fontWeight: "bold",
+         fill: "rgb(210,210,200)"
       });
-      return shape;
+      tt.setOrigin(0, 0);
+      tt.setPosition(0, 0);
+
+      var gauge = Gauge({
+            value: 0,
+            width: 122,
+            height: 6,
+            fill: "rgb(210,210,200)",
+            stroke: false,
+            gaugeColor: "rgb(0,210,200)",
+            padding: 0,
+      });
+      gauge.setPosition(2, 27);
+      gauge.setOrigin(0, 0);
+      gauge.addChildTo(tt);
+
+      return tt;
    },
 
 

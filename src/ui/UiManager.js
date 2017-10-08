@@ -29,12 +29,13 @@ phina.define("UiManager", {
 
       //仮
       controller.setPosition(187.5/2+20, SCREEN_HEIGHT - 187.5/2-20);
-      minimap.setPosition(SCREEN_WIDTH-10-50, 10+50).setVisible(false);
 
       var margin = 5;
       hero_status.setPosition(margin, margin);
 
-      other_status.setPosition(85+10+170+10, 10+50).setVisible(false);
+      other_status.setPosition(hero_status.width + margin*5 , margin);
+
+      minimap.setPosition(SCREEN_WIDTH-minimap.width-margin, margin);
 
       this.ui_data_list.push(controller, minimap, hero_status, other_status);
    },
