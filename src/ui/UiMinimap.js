@@ -27,6 +27,23 @@ phina.define("UiMinimap", {
          padding: null
       });
       shape.setOrigin(0, 0);
+
+      (11).times(function(y){
+         (11).times(function(x){
+
+            var r = RectangleShape({
+               width: 5,
+               height: 5,
+               fill: "rgb(210,210,200)",
+               stroke: null,
+               pudding: null
+            });
+            r.addChildTo(shape);
+            r.setPosition(x*8+10, y*8+10);
+
+         }.bind(this));
+      }.bind(this));
+
       return shape;
    },
 
