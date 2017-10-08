@@ -26,4 +26,22 @@ var ASSETS = {
       "x1_y2": "assets/tmx/x1_y2.tmx",
       "x2_y2": "assets/tmx/x2_y2.tmx",
    },
+
+   spritesheet: {
+      "hero_0_ss": {
+         "frame": {
+            "width": 60,
+            "height": 80,
+            "cols": 3,
+            "rows": 8,
+         },
+         "animations": {
+            "walk": {
+               "frames": [0, 1, 2],
+               "next": "walk", // loopさせるのに必要
+               "frequency": 6,
+            },
+         }
+      },
+   }
 };

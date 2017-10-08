@@ -50,19 +50,30 @@ phina.define("Hero",{
    _loadHeroSprite: function(char_id){
       var asset = this._loadAsset(char_id);
       var node = Sprite(asset , 60, 80); //自動計算にする
+
+      //位置仮、テスト中
+      var anim = FrameAnimation('hero_0_ss').attachTo(node);
+      anim.gotoAndPlay('walk');
+
       return node;
    },
 
 
    _loadAsset: function(char_id){
+      var name = this._createAssetName(char_id);
+      var asset = phina.asset.AssetManager.get("image", name);
+      return asset;
+   },
+
+
+   _createAssetName: function(char_id){
       if(char_id < 0){
          console.log("error");
          return;
       }
-      var label = "hero_" + char_id;
-      var asset = phina.asset.AssetManager.get("image", label);
-      return asset;
+      return "hero_" + char_id;
    },
+
 
    _attachNodeProperty: function(sprite, uuid, area_pos, node_pos, abs_pos, char_id){
       var node = sprite;
