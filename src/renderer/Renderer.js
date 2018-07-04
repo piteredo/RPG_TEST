@@ -84,11 +84,11 @@ phina.define("Renderer", {
          load: new_a.concat()
       };
 
-      if (old_a.length == 0) return data;
+      if (old_a.length == 0){console.log("come"); return data;}
 
       (old_a.length).times(function(i) {
          (new_a.length).times(function(v) {
-            if (old_a[i].equals(new_a[v])) {
+            if (old_a[i].abs_pos.equals(new_a[v].abs_pos)) {
                data.unload.splice(data.unload.indexOf(old_a[i]), 1);
                data.load.splice(data.load.indexOf(new_a[v]), 1);
             }
@@ -176,5 +176,26 @@ phina.define("Renderer", {
       }
       return -1;
    },
+
+   //暫定
+   moveChar: function(char, old_abs_pos, new_abs_pos){
+
+      var speed = 500;
+
+      var qua_pos = new_abs_pos.toQuarter( this.ratio_w , this.ratio_h );
+      char.tweener
+         .clear()
+         .to({
+            x: this.grid.span( qua_pos.x ),
+            y: this.grid.span( qua_pos.y )
+         }, speed)
+         .call(function(){
+            //this.ctrl_char_m.moveDone();
+         }.bind(this));
+      char.abs_pos = new_abs_pos;
+      char.area_pos = Vector2(Math.floor(char.abs_pos.x/NODE_LENGTH),Math.floor(char.abs_pos.y/NODE_LENGTH));
+      char.node_pos = Vector2(char.abs_pos.x%NODE_LENGTH, char.abs_pos.y%NODE_LENGTH);
+
+  },
 
 });

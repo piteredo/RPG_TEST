@@ -76,17 +76,12 @@ phina.define("UiManager", {
    },
 
 
-   chageCharDirection: function(dir){
-      this.MainScene.chageCharDirection(dir);
+   moveCharHero: function(dir){
+      this.MainScene.moveCharHero(dir);
    },
 
 
-   startCharMove: function(){
-      this.MainScene.startCharMove();
-   },
-
-
-   stopCharMove: function(){
-      this.MainScene.stopCharMove();
+   stopCharHero: function(){
+      this.MainScene.stopCharHero();
    },
 });

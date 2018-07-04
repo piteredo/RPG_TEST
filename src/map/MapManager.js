@@ -69,4 +69,19 @@ phina.define("MapManager", {
       return this.Area.getEnemyList(this.map_data);
    },
 
+
+   //暫定
+   getRouteList: function(new_abs_pos){
+      var new_area_pos_x = Math.floor(new_abs_pos.x/NODE_LENGTH);
+      var new_area_pos_y = Math.floor(new_abs_pos.y/NODE_LENGTH);
+      var new_node_pos_x = new_abs_pos.x%NODE_LENGTH;
+      var new_node_pos_y = new_abs_pos.y%NODE_LENGTH;
+
+      var new_node = this.map_data[new_area_pos_y][new_area_pos_x][new_node_pos_y][new_node_pos_x];
+
+      if(new_node.collision) return false;
+
+      return [new_abs_pos];
+   },
+
 });

@@ -33,9 +33,15 @@ phina.define("Char",{
    isMuteki: false, //naming..？
    isDead: false,
 
+   route_list: [],
+
 
    init: function(){
       this.superInit();
+   },
+
+   getIsWalking: function(){
+      return this.isWalking;
    },
 
    //ACTION_METHOD..

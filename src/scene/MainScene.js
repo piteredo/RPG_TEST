@@ -71,6 +71,9 @@ phina.define('MainScene', {
       var hero_data_list = this.CharManager.getHeroData(focus_uuid, focus_area_pos, focus_node_pos); //[{hero_data}] only 1 length
       this.UiManager.updateHeroUi(hero_data_list);
       this.Renderer.renderChar(hero_data_list);
+
+      //仮
+      this.hero = hero_data_list[0];
    },
 
 
@@ -90,18 +93,22 @@ phina.define('MainScene', {
    },
 
 
-   chageCharDirection: function(dir){
-      this.CharManager.chageCharDirection(dir);
+   //暫定
+   moveCharHero: function(dir){
+      //UiManagerから呼ばれる
+      var old_abs_pos = this.hero.abs_pos;
+      var new_abs_pos = old_abs_pos.add(phina.geom.Vector2[dir]);
+      this.Renderer.moveChar(this.hero, old_abs_pos, new_abs_pos);
+      this.Camera.updateCameraPos(this.hero.uuid, this.hero.area_pos, this.hero.node_pos);
+      var map_data = this.MapManager.getMapData(this.hero.area_pos);
+      var visible_node_list = this.Camera.getVisibleNodeList(map_data, this.hero.area_pos, this.hero.node_pos);
+      //console.log(visible_node_list);
+      //this.Renderer.renderMap(visible_node_list);
    },
 
 
-   startCharMove: function(){
-      //this.CharManager.startCharMove();
-   },
-
-
-   stopCharMove: function(){
-      //this.CharManager.stopCharMove();
+   stopCharHero: function(){
+      //this.CharManager.stopHero();
    },
 
 });

@@ -110,6 +110,7 @@ phina.define("Hero",{
       this.anim.gotoAndPlay(nn);
    },
 
+
 });
 
 

@@ -38,12 +38,8 @@ phina.define("UiController", {
       var center = phina.geom.Vector2(this.x , this.y);
       var pointed = phina.geom.Vector2(e.pointer.x , e.pointer.y);
       this.dir = pointed.sub(center).getDirection();
-
-      console.log(this.dir); //BOTTOM など８方向テキスト
-
-      //移動開始要求＋方角 func(this.dir)
-      this.UiManager.chageCharDirection(this.dir);
-      this.UiManager.startCharMove();
+      //移動要求＋方角 func(this.dir)
+      this.UiManager.moveCharHero(this.dir);
    },
 
    touchStay: function(e){
@@ -57,11 +53,8 @@ phina.define("UiController", {
       if(new_dir != this.dir)
       {
          this.dir = new_dir;
-
-         console.log(this.dir); //BOTTOM など８方向テキスト
-
-         //方角変更要求(移動継続) func(this.dir)
-         this.UiManager.chageCharDirection(this.dir);
+         //移動要求＋方角 func(this.dir)
+         this.UiManager.moveCharHero(this.dir);
       }
    },
 
@@ -75,7 +68,7 @@ phina.define("UiController", {
 
    touchEnd: function(e){
       //移動停止要求 func()
-      this.UiManager.stopCharMove();
+      this.UiManager.stopCharHero();
    },
 
 });

@@ -22,8 +22,8 @@ phina.define("HeroManager",{
    },
 
 
-   changeDirection: function(dir){
-      this.Hero.changeDirection(dir);
+   getHeroAbsPos: function(){
+      return this.Hero.abs_pos;
    },
 
 });

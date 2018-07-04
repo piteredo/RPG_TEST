@@ -64,7 +64,8 @@ phina.define("CharManager",{
    },
 
 
-   chageCharDirection: function(dir){
-      this.HeroManager.changeDirection(dir);
+   getHeroAbsPos: function(){
+      return this.HeroManager.getHeroAbsPos();
    },
+
 });
