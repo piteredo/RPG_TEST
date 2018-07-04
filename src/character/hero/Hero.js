@@ -44,16 +44,19 @@ phina.define("Hero",{
       var sprite = this._loadHeroSprite(char_id);
       var node = this._attachNodeProperty(sprite, uuid, area_pos, node_pos, abs_pos, char_id);
 
+      //仮
+      this.node = node;
+
       return node;
    },
 
    _loadHeroSprite: function(char_id){
       var asset = this._loadAsset(char_id);
-      var node = Sprite(asset , 60, 80); //自動計算にする
+      var node = Sprite(asset , 60, 81); //自動計算にする
 
       //位置仮、テスト中
-      var anim = FrameAnimation('hero_0_ss').attachTo(node);
-      anim.gotoAndPlay('walk');
+      this.anim = FrameAnimation('hero_0_ss').attachTo(node);
+      this.anim.gotoAndPlay('RIGHT_BOTTOM_WALK');
 
       return node;
    },
@@ -89,4 +92,39 @@ phina.define("Hero",{
       return node;
    },
 
+
+   changeDirection: function(dir){
+      var n = 0;
+      var nn = "RIGHT_BOTTOM_WALK";
+      switch(dir){
+         case "TOP": n = 7; nn="LEFT_TOP_WALK"; break;
+         case "LEFT_TOP": n = 7; nn="LEFT_TOP_WALK"; break;
+         case "RIGHT_TOP": n = 10; nn="RIGHT_TOP_WALK"; break;
+         case "RIGHT": n = 1; nn="RIGHT_BOTTOM_WALK"; break;
+         case "RIGHT_BOTTOM": n = 1; nn="RIGHT_BOTTOM_WALK"; break;
+         case "BOTTOM": n = 1; nn="RIGHT_BOTTOM_WALK"; break;
+         case "LEFT_BOTTOM": n = 4; nn="LEFT_BOTTOM_WALK"; break;
+         case "LEFT": n = 4; nn="LEFT_BOTTOM_WALK"; break;
+      }
+      this.node.frameIndex = n;
+      this.anim.gotoAndPlay(nn);
+   },
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

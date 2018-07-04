@@ -10,7 +10,7 @@ phina.define("MapManager", {
    map_data: null,
    focus_area_pos: Vector2(-1, -1),
 
-   init: function() {
+   init: function(MainScene, TouchManager) {
       //子クラスの初期化
       this.AreaList = AreaList();
       this.Area = Area();

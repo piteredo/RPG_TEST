@@ -26,12 +26,15 @@ phina.define('MainScene', {
       this.Camera = Camera(this.AssetLayer);
       this.Renderer = Renderer(this.AssetLayer , this.UiLayer);
       //
-      this.MapManager = MapManager();
-      this.CharManager = CharManager();
-      this.UiManager = UiManager();
+      this.TouchManager = TouchManager();
+      //
+      this.MapManager = MapManager(this, this.TouchManager);
+      this.CharManager = CharManager(this, this.TouchManager);
+      this.UiManager = UiManager(this, this.TouchManager);
 
       //表示の初期化
       this._initDisplay(focus_uuid, focus_area_pos, focus_node_pos);
+      this.TouchManager.setup();
    },
 
 
@@ -84,6 +87,21 @@ phina.define('MainScene', {
       var enemy_data_list = this.CharManager.getEnemyData(enemy_list);
       this.UiManager.updateEnemyUi(enemy_data_list);
       this.Renderer.renderChar(enemy_data_list);
+   },
+
+
+   chageCharDirection: function(dir){
+      this.CharManager.chageCharDirection(dir);
+   },
+
+
+   startCharMove: function(){
+      //this.CharManager.startCharMove();
+   },
+
+
+   stopCharMove: function(){
+      //this.CharManager.stopCharMove();
    },
 
 });

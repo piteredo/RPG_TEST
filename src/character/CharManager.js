@@ -8,7 +8,7 @@
 phina.define("CharManager",{
 
 
-   init: function(){
+   init: function(MainScene, TouchManager){
       this.HeroManager = HeroManager();
       this.EnemyManager = EnemyManager();
       this.NpcManager = NpcManager();
@@ -44,7 +44,7 @@ phina.define("CharManager",{
          node.abs_pos = this._getRelPosToAbsPos(node.area_pos, node.node_pos);
          updated_list.push(node);
       }.bind(this));
-      
+
       return this.NpcManager.getNpcDataList(updated_list);
    },
 
@@ -61,5 +61,10 @@ phina.define("CharManager",{
       }.bind(this));
 
       return this.EnemyManager.getEnemyDataList(updated_list);
+   },
+
+
+   chageCharDirection: function(dir){
+      this.HeroManager.changeDirection(dir);
    },
 });

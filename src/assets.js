@@ -31,14 +31,29 @@ var ASSETS = {
       "hero_0_ss": {
          "frame": {
             "width": 60,
-            "height": 80,
+            "height": 81,
             "cols": 3,
             "rows": 8,
          },
          "animations": {
-            "walk": {
+            "RIGHT_BOTTOM_WALK": {
                "frames": [0, 1, 2],
-               "next": "walk", // loopさせるのに必要
+               "next": "RIGHT_BOTTOM_WALK", // loopさせるのに必要
+               "frequency": 6,
+            },
+            "LEFT_BOTTOM_WALK": {
+               "frames": [3, 4, 5],
+               "next": "LEFT_BOTTOM_WALK", // loopさせるのに必要
+               "frequency": 6,
+            },
+            "RIGHT_TOP_WALK": {
+               "frames": [9, 10, 11],
+               "next": "RIGHT_TOP_WALK", // loopさせるのに必要
+               "frequency": 6,
+            },
+            "LEFT_TOP_WALK": {
+               "frames": [6, 7, 8],
+               "next": "LEFT_TOP_WALK", // loopさせるのに必要
                "frequency": 6,
             },
          }

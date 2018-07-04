@@ -9,12 +9,14 @@ phina.define("UiManager", {
 
    ui_data_list: [],
 
-   init: function() {
+   init: function(MainScene, TouchManager) {
       //子クラスの初期化
-      this.UiController = UiController();
+      this.UiController = UiController(this, TouchManager);
       this.UiMinimap = UiMinimap();
       this.UiHeroStatus = UiHeroStatus();
       this.UiOtherStatus = UiOtherStatus();
+
+      this.MainScene = MainScene;
 
       //UIの組み立て
       this._buildUiList();
@@ -23,21 +25,23 @@ phina.define("UiManager", {
 
    _buildUiList: function(){
       var controller = this.UiController.getUi();
-      var minimap = this.UiMinimap.getUi();
-      var hero_status = this.UiHeroStatus.getUi();
-      var other_status = this.UiOtherStatus.getUi();
+      //var minimap = this.UiMinimap.getUi();
+      //ar hero_status = this.UiHeroStatus.getUi();
+      //var other_status = this.UiOtherStatus.getUi();
 
       //仮
       controller.setPosition(187.5/2+20, SCREEN_HEIGHT - 187.5/2-20);
 
-      var margin = 5;
+      /*var margin = 5;
       hero_status.setPosition(margin, margin);
 
       other_status.setPosition(hero_status.width + margin*5 , margin);
 
       minimap.setPosition(SCREEN_WIDTH-minimap.width-margin, margin);
+      */
 
-      this.ui_data_list.push(controller, minimap, hero_status, other_status);
+      //this.ui_data_list.push(controller, minimap, hero_status, other_status);
+      this.ui_data_list.push(controller);
    },
 
 
@@ -71,4 +75,18 @@ phina.define("UiManager", {
       //todo
    },
 
+
+   chageCharDirection: function(dir){
+      this.MainScene.chageCharDirection(dir);
+   },
+
+
+   startCharMove: function(){
+      this.MainScene.startCharMove();
+   },
+
+
+   stopCharMove: function(){
+      this.MainScene.stopCharMove();
+   },
 });

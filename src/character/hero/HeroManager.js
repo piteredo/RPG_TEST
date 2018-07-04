@@ -21,4 +21,9 @@ phina.define("HeroManager",{
       return [hero_node];
    },
 
+
+   changeDirection: function(dir){
+      this.Hero.changeDirection(dir);
+   },
+
 });

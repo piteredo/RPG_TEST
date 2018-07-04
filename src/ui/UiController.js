@@ -6,82 +6,76 @@
 //
 //
 phina.define("UiController", {
-   superClass: "DisplayElement",
+   superClass: "CircleShape",
 
-   init: function() {
-      this.superInit();
-
-      this.ui = this._createUi();
-   },
-
-
-   _createUi: function(){
-
-      //仮
-      var shape = CircleShape({
+   init: function(UiManager, TouchManager) {
+      this.superInit({
          radius: 187.5/2,
          fill: null,
          stroke: "rgb(210,210,200)",
          strokeWidth: 10
       });
 
-      var c = CircleShape({
-         radius: 30,
-         fill: null,
-         stroke: "rgb(210,210,200)",
-         strokeWidth: 10
-      });
-      c.setPosition(130, -92);
-      c.addChildTo(shape);
+      this.UiManager = UiManager;
 
-      var cc = CircleShape({
-         radius: 30,
-         fill: null,
-         stroke: "rgb(210,210,200)",
-         strokeWidth: 10
-      });
-      cc.setPosition(50, -110-30);
-      cc.addChildTo(shape);
-
-      var ccc = CircleShape({
-         radius: 30,
-         fill: null,
-         stroke: "rgb(210,210,200)",
-         strokeWidth: 10
-      });
-      ccc.setPosition(110+37, 0);
-      ccc.addChildTo(shape);
-
-      var cccc = CircleShape({
-         radius: 30,
-         fill: null,
-         stroke: "rgb(210,210,200)",
-         strokeWidth: 10
-      });
-      cccc.setPosition(110+37+85, 0);
-      cccc.addChildTo(shape);
-
-      var ccccc = CircleShape({
-         radius: 30,
-         fill: null,
-         stroke: "rgb(210,210,200)",
-         strokeWidth: 10
-      });
-      ccccc.setPosition(-74, -120);
-      ccccc.addChildTo(shape);
-
-      return shape;
+      this.name = "controller";
+      TouchManager.add(this);
+      TouchManager.on(this);
    },
 
 
    getUi: function() {
       //UiManager から呼ばれる
-      return this.ui;
+      return this;
    },
 
 
    updateData: function(argus){
       //UiManager から呼ばれる
+   },
+
+   touchStart: function(e){
+      var center = phina.geom.Vector2(this.x , this.y);
+      var pointed = phina.geom.Vector2(e.pointer.x , e.pointer.y);
+      this.dir = pointed.sub(center).getDirection();
+
+      console.log(this.dir); //BOTTOM など８方向テキスト
+
+      //移動開始要求＋方角 func(this.dir)
+      this.UiManager.chageCharDirection(this.dir);
+      this.UiManager.startCharMove();
+   },
+
+   touchStay: function(e){
+      //console.log("stay" , this.name);
+   },
+
+   touchMove: function(e){
+      var center = phina.geom.Vector2(this.x , this.y);
+      var pointed = phina.geom.Vector2(e.pointer.x , e.pointer.y);
+      var new_dir = pointed.sub(center).getDirection();
+      if(new_dir != this.dir)
+      {
+         this.dir = new_dir;
+
+         console.log(this.dir); //BOTTOM など８方向テキスト
+
+         //方角変更要求(移動継続) func(this.dir)
+         this.UiManager.chageCharDirection(this.dir);
+      }
+   },
+
+   touchFlick: function(e){
+      //console.log("flick" , this.name);
+   },
+
+   touchTap: function(e){
+      //console.log("tap" , this.name);
+   },
+
+   touchEnd: function(e){
+      //移動停止要求 func()
+      this.UiManager.stopCharMove();
    },
 
 });
